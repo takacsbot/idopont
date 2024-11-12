@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Képzéseink - Firestarter Akadémia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <style>
+        /* Az alap design az eredeti oldalról */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #2D3436;
+            --light: #F7F7F7;
+            --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
+        }
+
+        body {
+            background-color: #F7F7F7;
+            color: #2D3436;
+            line-height: 1.6;
+            padding-top: 80px;
+            transition: all 0.3s ease;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 5%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2D3436;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .program-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .training-section {
+            margin-top: 4rem;
+        }
+
+        .training-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .training-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .training-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .training-info {
+            font-size: 1rem;
+            color: #2D3436;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .training-info strong {
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <section class="content-container" data-aos="fade-up">
+        <h1 class="section-title">Képzéseink</h1>
+        <p class="program-description">
+            A Firestarter Akadémia különféle képzéseket kínál, amelyek célja a személyes és szakmai fejlődés támogatása. Akár életvezetési tanácsadásra, akár üzleti fejlődési iránymutatásra van szükséged, nálunk megtalálhatod a megfelelő programot.
+        </p>
+
+        <div class="training-section" data-aos="fade-up" data-aos-delay="200">
+
+            <div class="training-card" data-aos="fade-right">
+                <h2 class="training-title">Life Coaching Képzés</h2>
+                <p class="training-info">
+                    Fejleszd önismereted és találj rá a belső erőforrásaidra! Ebben a képzésben segítünk felismerni, hogyan érheted el a legjobbat önmagadból, és támogatunk abban, hogy magabiztosabban lépj az önmegvalósítás útjára.
+                </p>
+                <p class="training-info"><strong>Időtartam:</strong> 6 hét, heti 1 alkalom</p>
+                <p class="training-info"><strong>Kiknek ajánljuk:</strong> azoknak, akik önismereti és életvezetési iránymutatást keresnek</p>
+            </div>
+
+            <div class="training-card" data-aos="fade-right" data-aos-delay="100">
+                <h2 class="training-title">Business Coaching Tréning</h2>
+                <p class="training-info">
+                    Fejleszd vállalkozói képességeidet és válj vezetővé a szakmádban! Ez a képzés segít abban, hogy jobb döntéseket hozz, hatékonyabban kommunikálj és felkészültebben építsd a vállalkozásodat.
+                </p>
+                <p class="training-info"><strong>Időtartam:</strong> 8 hét, heti 2 alkalom</p>
+                <p class="training-info"><strong>Kiknek ajánljuk:</strong> vezetőknek és vállalkozóknak, akik fejlődni szeretnének</p>
+            </div>
+
+            <div class="training-card" data-aos="fade-right" data-aos-delay="200">
+                <h2 class="training-title">Stresszkezelés és Reziliencia Workshop</h2>
+                <p class="training-info">
+                    Ismerd meg, hogyan kezelheted hatékonyabban a mindennapi stresszt, és hogyan építheted ki a belső erőforrásaidat, hogy könnyebben alkalmazkodj a kihívásokhoz. Ez a workshop gyakorlati tanácsokkal és technikákkal lát el.
+                </p>
+                <p class="training-info"><strong>Időtartam:</strong> 4 hét, heti 1 alkalom</p>
+                <p class="training-info"><strong>Kiknek ajánljuk:</strong> mindenkinek, aki szeretné jobban kezelni a stresszt</p>
+            </div>
+
+            <div class="training-card" data-aos="fade-right" data-aos-delay="300">
+                <h2 class="training-title">Karriertervezés és Énmárka Építés</h2>
+                <p class="training-info">
+                    Ez a program segít a személyes és szakmai énmárka kialakításában, valamint karriered tudatos tervezésében. Tanuld meg, hogyan alakíthatsz ki egyedi és erős énmárkát, amely segíti a céljaid elérését.
+                </p>
+                <p class="training-info"><strong>Időtartam:</strong> 6 hét, heti 1 alkalom</p>
+                <p class="training-info"><strong>Kiknek ajánljuk:</strong> azoknak, akik szeretnék tudatosan építeni karrierjüket</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+</body>
+</html>
