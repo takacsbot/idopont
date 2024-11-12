@@ -33,293 +33,469 @@ function isLoggedIn($pdo) {
     }
     return false;
 }
-
-if (!isLoggedIn($pdo)) {
-    header("Location: bejelentkezes.php");
-    exit();
-}
-
 ?>
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Időpontfoglalás</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Firestarter Akadémia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #2D3436;
+            --light: #F7F7F7;
+            --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
+            
+
+            --bg-color: #F7F7F7;
+            --text-color: #2D3436;
+            --card-bg: white;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --testimonial-bg: rgba(255, 255, 255, 0.05);
+            --nav-link-color: #2D3436;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+            --testimonials-bg: #2D3436;
+            --hero-bg: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
+            --footer-bg: #F7F7F7;
+            --footer-text: #2D3436;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --header-bg: rgba(45, 45, 45, 0.95);
+            --testimonial-bg: rgba(255, 255, 255, 0.1);
+            --nav-link-color: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.3);
+            --testimonials-bg: #000000;
+            --hero-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --footer-bg: #2d2d2d;
+            --footer-text: #ffffff;
         }
 
         body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+        }
+
+        /* Theme switch gomb */
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--gradient);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #232526, #414345);
-            color: #f8f9fa;
-            padding: 20px;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
         header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 32px;
-            color: #ff7f50;
-            font-weight: 700;
-        }
-
-        .container {
+            position: fixed;
             width: 100%;
-            max-width: 800px;
-            background-color: #2e2e2e;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: background 0.3s ease;
         }
 
-        .container h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #f8f9fa;
+        header.scrolled {
+            background: var(--header-bg);
+            box-shadow: 0 2px 20px var(--card-shadow);
         }
 
-        .service-select, .time-select {
-            margin-bottom: 20px;
-            width: 100%;
-        }
-
-        .service-select select, .time-select select {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background-color: #3c3f41;
-            color: #f8f9fa;
-            font-size: 16px;
-        }
-
-        .calendar-header {
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
-        .calendar-header h3 {
-            margin: 0;
-            font-size: 20px;
-            color: #ff7f50;
-        }
-
-        .calendar-nav {
-            font-size: 24px;
-            cursor: pointer;
-            color: #ff7f50;
-        }
-
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        .day {
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            background-color: #3c3f41;
-            color: #f8f9fa;
-            cursor: pointer;
-        }
-
-        .day.available {
-            background-color: #ff7f50; /* Elérhető napok színe */
-        }
-
-        .day.unavailable {
-            background-color: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .appointment-form button {
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: #ff7f50;
-            color: #fff;
-            font-size: 16px;
+        .logo {
+            font-size: 1.5rem;
             font-weight: 700;
-            cursor: pointer;
-            transition: background 0.3s;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
         }
 
-        .appointment-form button:hover {
-            background: #ff5a1d;
+        .logo:hover {
+            transform: scale(1.05);
         }
 
-        .time-select {
-            display: none; /* Alapértelmezett rejtett */
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
         }
 
-        .time-select.active {
-            display: block; /* Megjelenítés, ha aktív */
+        nav a {
+            color: var(--nav-link-color);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .login-button {
+            background: var(--gradient);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 5rem 5%;
+            background: var(--hero-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: scale(1.5);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px var(--card-shadow);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonials {
+            background: var(--testimonials-bg);
+            color: white;
+            padding: 5rem 5%;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: var(--testimonial-bg);
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .theme-switch {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 14px;
+                z-index: 1;
+            }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Időpontfoglalás</h1>
-</header>
 
-<div class="container">
-    <h2>Foglalási adatok:</h2>
-    <div class="service-select">
-        <select id="service-select" onchange="updateAvailableTimes()">
-            <option value="">Válassz szolgáltatást</option>
-            <option value="consultation">Konzultáció</option>
-            <option value="therapy">Terápia</option>
-            <option value="coaching">Coaching</option>
-        </select>
-    </div>
 
-    <div class="calendar-header">
-        <div class="calendar-nav" onclick="prevMonth()">&lt;</div>
-        <h3 id="month-year"></h3>
-        <div class="calendar-nav" onclick="nextMonth()">&gt;</div>
-    </div>
+    <header>
+        <div class="header-content">
+            <div class="logo">Firestarter Akadémia</div>
 
-    <div class="calendar" id="calendar"></div>
+            <nav>
+                <a href="#kezdolap">Kezdőlap</a>
+                <a href="./kepzeseink.html">Képzésekről</a>
+                <a href="./rolunk.html">Rólunk</a>
+                <?php if (!isLoggedIn($pdo)) {
+                    echo '<a class="login-button" href="./bejelentkezes.php">Belépés/Regisztráció</a>';
+                } else {
+                    echo $_SESSION['username'];
+                }?>
+                <button class="theme-switch" onclick="toggleTheme()">
+                    <span class="mode-text">☀️</span>
+                </button>
+            </nav>
+        </div>
+    </header>
 
-    <div class="time-select" id="time-select">
-        <h3>Szabad időpontok:</h3>
-        <select id="time-options"></select>
-    </div>
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Alakítsd át az életed velünk</h1>
+            <p>Szakértő segítség az önfejlesztésben, karrierépítésben és kapcsolataid fejlesztésében</p>
+            <div class="contact-info">
+                <p>Kapcsolat: +36 70 631 3311</p>
+            </div>
+        </div>
+    </section>
 
-    <div class="appointment-form">
-        <button type="submit" onclick="bookAppointment()">Időpont foglalása</button>
-    </div>
-</div>
+    <section class="services">
+        <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+            <img src="life-coaching.jpg" alt="Life Coaching">
+            <h3>LIFE COACHING</h3>
+            <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
+            <a href="#" class="login-button">Részletek</a>
+        </div>
 
-<script>
-    let currentDate = new Date();
-    const availableDates = {
-        0: [5, 12, 19, 26], // Január
-        1: [3, 10, 17, 24], // Február
-        2: [1, 8, 15, 22], // Március
-        3: [5, 12, 19, 26], // Április
-        4: [3, 10, 17, 24], // Május
-        5: [1, 8, 15, 22], // Június
-        6: [6, 13, 20, 27], // Július
-        7: [3, 10, 17, 24], // Augusztus
-        8: [7, 14, 21, 28], // Szeptember
-        9: [5, 12, 19, 26], // Október
-        10: [2, 9, 16, 23], // November
-        11: [7, 14, 21, 28]  // December
-    };
+        <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+            <img src="business-coaching.jpg" alt="Business Coaching">
+            <h3>BUSINESS COACHING</h3>
+            <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
+            <a href="#" class="login-button">Részletek</a>
+        </div>
 
-    const availableTimes = {
-        "consultation": ["09:00", "10:00", "11:00", "14:00", "15:00"],
-        "therapy": ["09:30", "10:30", "11:30", "13:30", "14:30"],
-        "coaching": ["10:00", "11:00", "12:00", "15:00", "16:00"]
-    };
+        <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+            <img src="mediation.jpg" alt="Mediáció">
+            <h3>MEDIÁCIÓ</h3>
+            <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
+            <a href="#" class="login-button">Részletek</a>
+        </div>
 
-    function updateCalendar() {
-        const calendar = document.getElementById("calendar");
-        calendar.innerHTML = ""; // Tisztítás
+        <div class="service-card" data-aos="fade-up" data-aos-delay="400">
+            <img src="training-1.jpg" alt="Tréningek">
+            <h3>TRÉNINGEK</h3>
+            <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
+            <a href="#" class="login-button">Részletek</a>
+        </div>
+    </section>
 
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        const monthYear = document.getElementById("month-year");
-        monthYear.textContent = currentDate.toLocaleString("hu-HU", { month: "long", year: "numeric" });
+    <section class="testimonials">
+        <div class="testimonial-grid">
+            <div class="testimonial-card" data-aos="fade-right">
+                <p>„A coaching foglalkozások valódi megvilágosodást jelentettek számomra! Az életem új irányt vett, és sokkal magabiztosabb vagyok."</p>
+                <p>– Kata, Life Coaching ügyfél</p>
+            </div>
+            <div class="testimonial-card" data-aos="fade-left">
+                <p>„A Firestarter Akadémia üzleti coaching programja lehetővé tette, hogy fejlesszem vezetői készségeimet és megvalósítsam karrierálmaimat."</p>
+                <p>– Péter, Business Coaching ügyfél</p>
+            </div>
+        </div>
+    </section>
 
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
+    <footer>
+        <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
+    </footer>
 
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayDiv = document.createElement("div");
-            dayDiv.classList.add("day");
 
-            if (availableDates[month] && availableDates[month].includes(day)) {
-                dayDiv.classList.add("available");
-                dayDiv.addEventListener("click", () => selectDate(day));
+
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
             } else {
-                dayDiv.classList.add("unavailable");
+                header.classList.remove('scrolled');
             }
+        });
 
-            dayDiv.textContent = day;
-            calendar.appendChild(dayDiv);
+
+
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                modeText.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
         }
-    }
 
-    function prevMonth() {
-        if (currentDate.getMonth() > new Date().getMonth() || currentDate.getFullYear() > new Date().getFullYear()) {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            updateCalendar();
-        }
-    }
 
-    function nextMonth() {
-        if (currentDate.getMonth() < 11) {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            updateCalendar();
-        }
-    }
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+            }
+        });
 
-    function selectDate(day) {
-        const service = document.getElementById("service-select").value;
-        if (service) {
-            document.getElementById("time-select").classList.add("active");
-            updateAvailableTimes();
-            alert("Kiválasztott dátum: " + day + ". nap");
-        } else {
-            alert("Kérjük, válasszon szolgáltatást az időpontok megjelenítéséhez!");
-        }
-    }
-
-    function updateAvailableTimes() {
-        const service = document.getElementById("service-select").value;
-        const timeOptions = document.getElementById("time-options");
-        timeOptions.innerHTML = ""; // Tisztítás
-
-        if (service) {
-            const times = availableTimes[service] || [];
-            times.forEach(time => {
-                const option = document.createElement("option");
-                option.value = time;
-                option.textContent = time;
-                timeOptions.appendChild(option);
-            });
-        }
-    }
-
-    function bookAppointment() {
-        const service = document.getElementById("service-select").value;
-        const time = document.getElementById("time-options").value;
-
-        if (!service) {
-            alert("Kérjük, válasszon szolgáltatást!");
-            return;
-        }
-        if (!time) {
-            alert("Kérjük, válasszon időpontot!");
-            return;
-        }
-        alert("Időpont foglalása sikeres: " + service + " - " + time);
-    }
-
-    document.addEventListener("DOMContentLoaded", updateCalendar);
-</script>
-
+    </script>
 </body>
 </html>

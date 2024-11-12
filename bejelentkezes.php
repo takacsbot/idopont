@@ -372,7 +372,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <button class="theme-switch" onclick="toggleTheme()">
-        <span class="mode-text">☀️ Light Mode</span>
+        <span class="mode-text">☀️</span>
     </button>
 
     <div class="background-shapes">
@@ -382,13 +382,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container" data-aos="fade-up">
         <h2>Bejelentkezés</h2>
-        <form action="#" autocomplete="off">
+        <?php
+        if (!empty($message)) {
+            echo "<p style='color: red;'>$message</p>";
+        }
+        ?>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <div class="input-group">
-                <input type="email" id="email" placeholder=" " required>
+                <input type="email" name="email" placeholder=" " required>
                 <label for="email">Email cím</label>
             </div>
             <div class="input-group">
-                <input type="password" id="password" placeholder=" " required>
+                <input type="password" name="password" placeholder=" " required>
                 <label for="password">Jelszó</label>
             </div>
             <div class="forgot-password">
@@ -440,11 +445,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                modeText.textContent = '☀️ Light Mode';
+                modeText.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -457,22 +462,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
             }
         });
 
-        // Form kezelése
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
+    
 
-            console.log('Bejelentkezési kísérlet:', { email, password });
-        });
-
-        // Social login gombok hover effektus
         document.querySelectorAll('.social-icon').forEach(icon => {
             icon.addEventListener('mouseover', function() {
                 this.style.transform = 'translateY(-3px)';
@@ -482,37 +477,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 this.style.transform = 'translateY(0)';
             });
         });
+        
 
 
-        function addPasswordToggle() {
-            const passwordInput = document.getElementById('password');
-            const toggleButton = document.createElement('button');
-            toggleButton.type = 'button';
-            toggleButton.className = 'password-toggle';
-            toggleButton.innerHTML = '👁️';
-            toggleButton.style.cssText = `
-                position: absolute;
-                right: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-                background: none;
-                border: none;
-                cursor: pointer;
-                color: var(--input-label);
-            `;
-            
-            passwordInput.parentElement.style.position = 'relative';
-            passwordInput.parentElement.appendChild(toggleButton);
-            
-            toggleButton.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                this.innerHTML = type === 'password' ? '👁️' : '👁️‍🗨️';
-            });
-        }
-
-
-        addPasswordToggle();
     </script>
 </body>
 </html>

@@ -449,7 +449,6 @@ function isLoggedIn($pdo) {
             once: true
         });
 
-        // Header scroll effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 100) {

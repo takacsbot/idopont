@@ -436,18 +436,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container" data-aos="fade-up">
         <div class="form-box">
-            <h2>Regisztráció</h2>
-            <form action="#" autocomplete="off">
+        <h2>Regisztráció</h2>
+        <?php
+        if (!empty($message)) {
+            echo "<p style='color: " . (strpos($message, 'successful') !== false ? 'green' : 'red') . ";'>$message</p>";
+        }
+        ?>
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="input-group">
-                    <input type="text" id="username" placeholder=" " required>
+                    <input type="text" name="username" placeholder=" " required>
                     <label for="username">Felhasználónév</label>
                 </div>
                 <div class="input-group">
-                    <input type="email" id="email" placeholder=" " required>
+                    <input type="email" name="email" placeholder=" " required>
                     <label for="email">Email cím</label>
                 </div>
                 <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
+                    <input type="password" name="password" placeholder=" " required>
                     <label for="password">Jelszó</label>
                 </div>
                 <button type="submit" class="button">Regisztráció</button>
@@ -502,11 +507,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                modeText.textContent = '☀️ Light Mode';
+                modeText.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -519,7 +524,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
             }
         });
     </script>
