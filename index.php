@@ -1,3 +1,45 @@
+<?php
+session_start();
+
+$host = 'localhost';
+$dbname = 'timetable_db';
+$username = 'root';
+$password = '';
+
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+function isLoggedIn($pdo) {
+    $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
+    
+    if ($token) {
+        $stmt = $pdo->prepare("SELECT u.* FROM users u 
+                               JOIN auth_tokens a ON u.id = a.user_id 
+                               WHERE a.token = ? AND a.expires_at > NOW()");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['auth_token'] = $token;
+            return true;
+        }
+    }
+    return false;
+}
+
+if (!isLoggedIn($pdo)) {
+    header("Location: bejelentkezes.php");
+    exit();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>

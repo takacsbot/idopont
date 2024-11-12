@@ -1,3 +1,39 @@
+<?php
+session_start();
+
+$host = 'localhost';
+$dbname = 'timetable_db';
+$username = 'root';
+$password = '';
+
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+function isLoggedIn($pdo) {
+    $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
+    
+    if ($token) {
+        $stmt = $pdo->prepare("SELECT u.* FROM users u 
+                               JOIN auth_tokens a ON u.id = a.user_id 
+                               WHERE a.token = ? AND a.expires_at > NOW()");
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
+
+        if ($user) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['auth_token'] = $token;
+            return true;
+        }
+    }
+    return false;
+}
+?>
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -23,7 +59,6 @@
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
             
-            /* Light mode alapértelmezett színek */
             --bg-color: #F7F7F7;
             --text-color: #2D3436;
             --card-bg: white;
@@ -65,7 +100,6 @@
             border-radius: 16px;
         }
 
-        /* Theme switch gomb */
         .theme-switch {
             position: fixed;
             top: 20px;
@@ -330,7 +364,6 @@
     </style>
 </head>
 <body>
-    <!-- Dark mode kapcsoló -->
     <button class="theme-switch" onclick="toggleTheme()">
         <span class="mode-text">☀️ Light Mode</span>
     </button>
@@ -405,16 +438,13 @@
         <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
 
-    <!-- Az oldal többi része marad ugyanaz... -->
 
     <script>
-        // AOS inicializálása
         AOS.init({
             duration: 1000,
             once: true
         });
 
-        // Header scroll effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 100) {
@@ -424,7 +454,6 @@
             }
         });
 
-        // Dark mode funkcionalitás
         function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-switch');

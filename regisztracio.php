@@ -1,3 +1,48 @@
+<?php
+$host = 'localhost';
+$dbname = 'timetable_db';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+$message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    if (empty($username) || empty($email) || empty($password)) {
+        $message = "A mezők kitöltése kötelező.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $message = "Helytelen e-mail formátum.";
+    } else {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+        $stmt->execute([$username, $email]);
+        
+        if ($stmt->rowCount() > 0) {
+            $message = "Ez a felhasználó név vagy e-mail már használatban van.";
+        } else {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            
+            try {
+                $stmt->execute([$username, $email, $hashed_password]);
+                $message = "Regisztráció sikeres!";
+            } catch(PDOException $e) {
+                $message = "Regisztráció sikertelen: " . $e->getMessage();
+            }
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -14,13 +59,13 @@
             --dark: #2D3436;
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
-            
-            /* Dark mode változók */
             --bg-color: #F6F6F6;
             --container-bg: rgba(255, 255, 255, 0.95);
             --input-bg: #f5f5f5;
             --text-color: #2D3436;
             --input-label: #666;
+            --social-icon-bg: #f5f5f5;
+            --social-text: #666;
         }
 
         [data-theme="dark"] {
@@ -29,6 +74,8 @@
             --input-bg: #333;
             --text-color: #ffffff;
             --input-label: #aaa;
+            --social-icon-bg: #333;
+            --social-text: #fff;
         }
 
         * {
@@ -45,85 +92,9 @@
             min-height: 100vh;
             background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-color) 100%);
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
             color: var(--text-color);
-        }
-
-        .container {
-            display: flex;
-            width: 900px;
-            background: var(--container-bg);
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            outline: none;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            font-size: 16px;
             transition: all 0.3s ease;
-        }
-
-        .input-group label {
-            color: var(--input-label);
-        }
-
-        /* Dark mode kapcsoló stílusa */
-        .theme-switch {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--gradient);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .theme-switch:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
-        :root {
-            --primary: #FF6B6B;
-            --secondary: #4ECDC4;
-            --dark: #2D3436;
-            --light: #F7F7F7;
-            --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
-            position: relative;
-            overflow: hidden;
         }
 
         .background-shapes {
@@ -169,7 +140,7 @@
         .container {
             display: flex;
             width: 900px;
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--container-bg);
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -177,6 +148,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .form-box {
@@ -234,12 +206,7 @@
             font-weight: 700;
             font-size: 24px;
             position: relative;
-        }
-
-        .form-box h2 {
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-color);
         }
 
         .welcome-box h2 {
@@ -258,15 +225,15 @@
             border: 2px solid transparent;
             border-radius: 12px;
             outline: none;
-            background-color: #f5f5f5;
-            color: var(--dark);
+            background-color: var(--input-bg);
+            color: var(--text-color);
             font-size: 16px;
             transition: all 0.3s ease;
         }
 
         .input-group input:focus {
             border-color: var(--primary);
-            background-color: white;
+            background-color: var(--container-bg);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.1);
         }
 
@@ -276,7 +243,7 @@
             left: 15px;
             transform: translateY(-50%);
             font-size: 14px;
-            color: #666;
+            color: var(--input-label);
             transition: all 0.3s ease;
             pointer-events: none;
             padding: 0 5px;
@@ -288,7 +255,7 @@
             left: 10px;
             transform: translateY(-50%);
             font-size: 12px;
-            background: white;
+            background: var(--container-bg);
             color: var(--primary);
             font-weight: 500;
         }
@@ -363,7 +330,7 @@
         }
 
         .social-login p {
-            color: #666;
+            color: var(--social-text);
             font-size: 14px;
             margin-bottom: 15px;
         }
@@ -381,7 +348,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f5f5f5;
+            background: var(--social-icon-bg);
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -389,6 +356,29 @@
         .social-icon:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--gradient);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
         @media (max-width: 768px) {
@@ -406,11 +396,9 @@
                 height: 5px;
             }
         }
-
     </style>
 </head>
 <body>
-    <!-- Dark mode kapcsoló -->
     <button class="theme-switch" onclick="toggleTheme()">
         <span class="mode-text">☀️ Light Mode</span>
     </button>
@@ -423,21 +411,26 @@
     <div class="container" data-aos="fade-up">
         <div class="form-box">
             <h2>Regisztráció</h2>
-            <form action="#" autocomplete="off">
-                <div class="input-group">
-                    <input type="text" id="username" placeholder=" " required>
-                    <label for="username">Felhasználónév</label>
-                </div>
-                <div class="input-group">
-                    <input type="email" id="email" placeholder=" " required>
-                    <label for="email">Email cím</label>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
-                    <label for="password">Jelszó</label>
-                </div>
-                <button type="submit" class="button">Regisztráció</button>
-            </form>
+            <?php
+            if (!empty($message)) {
+                echo "<p style='color: " . (strpos($message, 'successful') !== false ? 'green' : 'red') . ";'>$message</p>";
+            }
+            ?>
+            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                    <div class="input-group">
+                        <input type="text" name="username" placeholder=" " required>
+                        <label for="username">Felhasználónév</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder=" " required>
+                        <label for="email">Email cím</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" name="password" placeholder=" " required>
+                        <label for="password">Jelszó</label>
+                    </div>
+                    <button type="submit" class="button">Regisztráció</button>
+                </form>
 
             <div class="social-login">
                 <p>Vagy regisztrálj</p>
@@ -470,7 +463,6 @@
             once: true
         });
 
-        // Dark mode funkcionalitás
         function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-switch');
@@ -487,8 +479,7 @@
             }
         }
 
-        // Téma betöltése a localStorage-ból
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
