@@ -39,6 +39,7 @@ CREATE TABLE `auth_tokens` (
 --
 
 INSERT INTO `auth_tokens` (`id`, `user_id`, `token`, `expires_at`) VALUES
+(1, 1, 'b49fcc6fbad07dd39b9bbac7aa17f99729bba2cb3f210a1e5df0b453ebe48134', '2024-11-06 09:31:54'),
 
 -- --------------------------------------------------------
 
@@ -59,6 +60,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `created_at`) VALUES
+(1, 'a', 'a@test.net', '$2y$10$pgQc9mOAjXnv.iI0y1pRt.uqTMhXJMijeR7Ov5ZRG2bjooh/Wsj/6', '2024-11-05 09:08:52'),
 
 --
 -- Indexek a kiírt táblákhoz
