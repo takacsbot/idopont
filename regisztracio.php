@@ -59,6 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             --dark: #2D3436;
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
+            
+
             --bg-color: #F6F6F6;
             --container-bg: rgba(255, 255, 255, 0.95);
             --input-bg: #f5f5f5;
@@ -351,12 +353,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background: var(--social-icon-bg);
             cursor: pointer;
             transition: all 0.3s ease;
+            padding: 10px;
+        }
+
+        .social-icon svg {
+            width: 24px;
+            height: 24px;
+            transition: all 0.3s ease;
         }
 
         .social-icon:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
+
+        .social-icon.google:hover {
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+        }
+
+        .social-icon.facebook:hover {
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(59, 89, 152, 0.3);
+        }
+
+        .social-icon.apple:hover {
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
 
         .theme-switch {
             position: fixed;
@@ -399,6 +424,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+
     <button class="theme-switch" onclick="toggleTheme()">
         <span class="mode-text">☀️ Light Mode</span>
     </button>
@@ -411,38 +437,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container" data-aos="fade-up">
         <div class="form-box">
             <h2>Regisztráció</h2>
-            <?php
-            if (!empty($message)) {
-                echo "<p style='color: " . (strpos($message, 'successful') !== false ? 'green' : 'red') . ";'>$message</p>";
-            }
-            ?>
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                    <div class="input-group">
-                        <input type="text" name="username" placeholder=" " required>
-                        <label for="username">Felhasználónév</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="email" name="email" placeholder=" " required>
-                        <label for="email">Email cím</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" placeholder=" " required>
-                        <label for="password">Jelszó</label>
-                    </div>
-                    <button type="submit" class="button">Regisztráció</button>
-                </form>
+            <form action="#" autocomplete="off">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder=" " required>
+                    <label for="username">Felhasználónév</label>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="email" placeholder=" " required>
+                    <label for="email">Email cím</label>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label for="password">Jelszó</label>
+                </div>
+                <button type="submit" class="button">Regisztráció</button>
+            </form>
 
             <div class="social-login">
                 <p>Vagy regisztrálj</p>
                 <div class="social-icons">
-                    <div class="social-icon">
-                        <img src="/api/placeholder/24/24" alt="Google">
+                    <div class="social-icon google">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21.8055 10.0415H21V10H12V14H17.6515C16.827 16.3285 14.6115 18 12 18C8.6865 18 6 15.3135 6 12C6 8.6865 8.6865 6 12 6C13.5295 6 14.921 6.577 15.9805 7.5195L18.809 4.691C17.023 3.0265 14.634 2 12 2C6.4775 2 2 6.4775 2 12C2 17.5225 6.4775 22 12 22C17.5225 22 22 17.5225 22 12C22 11.3295 21.931 10.675 21.8055 10.0415Z" fill="#FFC107"/>
+                            <path d="M3.15295 7.3455L6.43845 9.755C7.32745 7.554 9.48045 6 12 6C13.5295 6 14.921 6.577 15.9805 7.5195L18.809 4.691C17.023 3.0265 14.634 2 12 2C8.15895 2 4.82795 4.1685 3.15295 7.3455Z" fill="#FF3D00"/>
+                            <path d="M12 22C14.583 22 16.93 21.0115 18.7045 19.404L15.6095 16.785C14.5717 17.5742 13.3037 18.0011 12 18C9.39903 18 7.19053 16.3415 6.35853 14.027L3.09753 16.5395C4.75253 19.778 8.11353 22 12 22Z" fill="#4CAF50"/>
+                            <path d="M21.8055 10.0415H21V10H12V14H17.6515C17.2571 15.1082 16.5467 16.0766 15.608 16.7855L15.6095 16.785L18.7045 19.404C18.4855 19.6025 22 17 22 12C22 11.3295 21.931 10.675 21.8055 10.0415Z" fill="#1976D2"/>
+                        </svg>
                     </div>
-                    <div class="social-icon">
-                        <img src="/api/placeholder/24/24" alt="Facebook">
+                    <div class="social-icon facebook">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 12.05C20 7.60001 16.4 4.00001 12 4.00001C7.6 4.00001 4 7.60001 4 12.05C4 16.1 6.9 19.4 10.7 20V14.9H8.7V12.05H10.7V9.80001C10.7 7.30001 11.9 6.20001 14.1 6.20001C15.2 6.20001 16.3 6.40001 16.3 6.40001V8.30001H15C13.7 8.30001 13.3 9.00001 13.3 9.70001V12.05H16.2L15.7 14.9H13.3V20C17.1 19.4 20 16.1 20 12.05Z" fill="#1877F2"/>
+                        </svg>
                     </div>
-                    <div class="social-icon">
-                        <img src="/api/placeholder/24/24" alt="Apple">
+                    <div class="social-icon apple">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.94 5.19C15.88 4.03 16.49 2.57 16.33 1C15.03 1.09 13.43 1.95 12.46 3.11C11.57 4.16 10.85 5.63 11.04 7.2C12.48 7.27 14 6.42 14.94 5.19Z" fill="black"/>
+                            <path d="M20.3 17.89C20.96 16.82 21.21 16.29 21.83 14.96C19.8 14.09 19.09 11.46 21.11 10.12C20.12 8.89 18.81 8.33 17.5 8.33C16.24 8.33 15.45 8.89 14.43 8.89C13.35 8.89 12.42 8.33 11.24 8.33C9.59 8.33 7.79 9.38 6.79 11.2C5.31 13.89 5.64 19.14 8.16 23C9.06 24.24 10.2 25.63 11.67 25.63C13.06 25.63 13.57 24.82 15.2 24.82C16.83 24.82 17.29 25.63 18.75 25.63C20.22 25.63 21.28 24.36 22.18 23.12C22.8 22.23 23.05 21.8 23.68 20.45C21.48 19.45 20.3 17.89 20.3 17.89Z" fill="black"/>
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -463,6 +494,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             once: true
         });
 
+
         function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-switch');
@@ -478,6 +510,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 localStorage.setItem('theme', 'dark');
             }
         }
+
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');

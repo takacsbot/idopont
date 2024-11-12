@@ -59,6 +59,7 @@ function isLoggedIn($pdo) {
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
             
+
             --bg-color: #F7F7F7;
             --text-color: #2D3436;
             --card-bg: white;
@@ -100,6 +101,7 @@ function isLoggedIn($pdo) {
             border-radius: 16px;
         }
 
+        /* Theme switch gomb */
         .theme-switch {
             position: fixed;
             top: 20px;
@@ -439,12 +441,14 @@ function isLoggedIn($pdo) {
     </footer>
 
 
+
     <script>
         AOS.init({
             duration: 1000,
             once: true
         });
 
+        // Header scroll effect
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 100) {
@@ -453,6 +457,7 @@ function isLoggedIn($pdo) {
                 header.classList.remove('scrolled');
             }
         });
+
 
         function toggleTheme() {
             const body = document.body;
@@ -470,7 +475,7 @@ function isLoggedIn($pdo) {
             }
         }
 
-        // Téma betöltése a localStorage-ból
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
