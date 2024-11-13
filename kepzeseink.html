@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
     <style>
-        /* Az alap design az eredeti oldalról */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -21,26 +20,95 @@
             --dark: #2D3436;
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
+            
+            --bg-color: #F7F7F7;
+            --text-color: #2D3436;
+            --card-bg: white;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --nav-link-color: #2D3436;
+            --card-shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --header-bg: rgba(45, 45, 45, 0.95);
+            --nav-link-color: #ffffff;
+            --card-shadow: rgba(0, 0, 0, 0.3);
         }
 
         body {
-            background-color: #F7F7F7;
-            color: #2D3436;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
-            padding-top: 80px;
             transition: all 0.3s ease;
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--gradient);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--header-bg);
+            box-shadow: 0 2px 20px var(--card-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         .content-container {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 5rem 5%;
+            margin: 6rem auto 0;
+            padding: 2rem 5%;
         }
 
         .section-title {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #2D3436;
             text-align: center;
             margin-bottom: 2rem;
             background: var(--gradient);
@@ -52,55 +120,123 @@
             font-size: 1.2rem;
             margin-bottom: 2rem;
             line-height: 1.8;
-        }
-
-        .training-section {
-            margin-top: 4rem;
+            color: var(--text-color);
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .training-card {
-            background: #ffffff;
+            background: var(--card-bg);
             padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px var(--card-shadow);
             margin-bottom: 2rem;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .training-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
         }
 
         .training-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 20px var(--card-shadow);
         }
 
         .training-title {
             font-size: 1.8rem;
             font-weight: 600;
             color: var(--primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .training-info {
-            font-size: 1rem;
-            color: #2D3436;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
         }
 
         .training-info strong {
             color: var(--secondary);
         }
+
+        .home-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1000;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .program-description {
+                font-size: 1.1rem;
+            }
+
+            .training-title {
+                font-size: 1.5rem;
+            }
+
+            .theme-switch {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .home-button {
+                bottom: 10px;
+                right: 10px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
+    <button class="theme-switch" onclick="toggleTheme()">
+        <span class="mode-text">☀️ Light Mode</span>
+    </button>
+
+    <header>
+        <div class="header-content">
+            <a href="#" class="logo">Firestarter Akadémia</a>
+        </div>
+    </header>
+
     <section class="content-container" data-aos="fade-up">
         <h1 class="section-title">Képzéseink</h1>
         <p class="program-description">
             A Firestarter Akadémia különféle képzéseket kínál, amelyek célja a személyes és szakmai fejlődés támogatása. Akár életvezetési tanácsadásra, akár üzleti fejlődési iránymutatásra van szükséged, nálunk megtalálhatod a megfelelő programot.
         </p>
 
-        <div class="training-section" data-aos="fade-up" data-aos-delay="200">
-
-            <div class="training-card" data-aos="fade-right">
+        <div class="training-section">
+            <div class="training-card" data-aos="fade-up">
                 <h2 class="training-title">Life Coaching Képzés</h2>
                 <p class="training-info">
                     Fejleszd önismereted és találj rá a belső erőforrásaidra! Ebben a képzésben segítünk felismerni, hogyan érheted el a legjobbat önmagadból, és támogatunk abban, hogy magabiztosabban lépj az önmegvalósítás útjára.
@@ -109,7 +245,7 @@
                 <p class="training-info"><strong>Kiknek ajánljuk:</strong> azoknak, akik önismereti és életvezetési iránymutatást keresnek</p>
             </div>
 
-            <div class="training-card" data-aos="fade-right" data-aos-delay="100">
+            <div class="training-card" data-aos="fade-up" data-aos-delay="100">
                 <h2 class="training-title">Business Coaching Tréning</h2>
                 <p class="training-info">
                     Fejleszd vállalkozói képességeidet és válj vezetővé a szakmádban! Ez a képzés segít abban, hogy jobb döntéseket hozz, hatékonyabban kommunikálj és felkészültebben építsd a vállalkozásodat.
@@ -118,7 +254,7 @@
                 <p class="training-info"><strong>Kiknek ajánljuk:</strong> vezetőknek és vállalkozóknak, akik fejlődni szeretnének</p>
             </div>
 
-            <div class="training-card" data-aos="fade-right" data-aos-delay="200">
+            <div class="training-card" data-aos="fade-up" data-aos-delay="200">
                 <h2 class="training-title">Stresszkezelés és Reziliencia Workshop</h2>
                 <p class="training-info">
                     Ismerd meg, hogyan kezelheted hatékonyabban a mindennapi stresszt, és hogyan építheted ki a belső erőforrásaidat, hogy könnyebben alkalmazkodj a kihívásokhoz. Ez a workshop gyakorlati tanácsokkal és technikákkal lát el.
@@ -127,7 +263,7 @@
                 <p class="training-info"><strong>Kiknek ajánljuk:</strong> mindenkinek, aki szeretné jobban kezelni a stresszt</p>
             </div>
 
-            <div class="training-card" data-aos="fade-right" data-aos-delay="300">
+            <div class="training-card" data-aos="fade-up" data-aos-delay="300">
                 <h2 class="training-title">Karriertervezés és Énmárka Építés</h2>
                 <p class="training-info">
                     Ez a program segít a személyes és szakmai énmárka kialakításában, valamint karriered tudatos tervezésében. Tanuld meg, hogyan alakíthatsz ki egyedi és erős énmárkát, amely segíti a céljaid elérését.
@@ -138,11 +274,40 @@
         </div>
     </section>
 
+    <a href="#" class="home-button">Kezdőlap</a>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
         AOS.init({
             duration: 1000,
             once: true
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                modeText.textContent = '☀️ Light Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙 Dark Mode';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙 Dark Mode';
+            }
         });
     </script>
 </body>

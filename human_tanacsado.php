@@ -400,6 +400,7 @@ function isLoggedIn($pdo) {
             <h3>LIFE COACHING</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
             <a href="#" class="login-button">Részletek</a>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
@@ -414,6 +415,7 @@ function isLoggedIn($pdo) {
             <h3>MEDIÁCIÓ</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
             <a href="#" class="login-button">Részletek</a>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
@@ -421,6 +423,7 @@ function isLoggedIn($pdo) {
             <h3>TRÉNINGEK</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
             <a href="#" class="login-button">Részletek</a>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
     </section>
 
