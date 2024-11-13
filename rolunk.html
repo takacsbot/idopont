@@ -74,6 +74,11 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
+        
+        .theme-switch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
 
         header {
             position: fixed;
@@ -81,6 +86,11 @@
             top: 0;
             z-index: 1000;
             transition: background 0.3s ease;
+        }
+
+        header.scrolled {
+            background: var(--header-bg);
+            box-shadow: 0 2px 20px var(--card-shadow);
         }
 
         .header-content {
@@ -115,7 +125,7 @@
             transition: color 0.3s ease;
         }
 
-        .login-button {
+        .home-button {
             background: var(--gradient);
             color: white;
             padding: 0.8rem 1.5rem;
@@ -217,7 +227,7 @@
             color: var(--footer-text);
             text-align: center;
             padding: 2rem;
-            margin-top: 4rem;
+            margin-top: 2rem;
         }
 
         @media (max-width: 768px) {
@@ -238,19 +248,15 @@
     </style>
 </head>
 <body>
-    <button class="theme-switch" onclick="toggleTheme()">
-        <span class="mode-text">☀️ Light Mode</span>
-    </button>
-
     <header>
         <div class="header-content">
             <div class="logo">Firestarter Akadémia</div>
             <nav>
-                <a href="index.html">Kezdőlap</a>
-                <a href="#jelentkezes">Jelentkezés</a>
-                <a href="#kepzesekrol">Képzésekről</a>
-                <a href="#rolunk">Rólunk</a>
-                <a href="#login" class="login-button">Belépés</a>
+                <button class="theme-switch" onclick="toggleTheme()">
+                    <span class="mode-text">☀️</span>
+                </button>
+            
+                <a href="../" class="home-button">Kezdőlap</a>
             </nav>
         </div>
     </header>
@@ -341,11 +347,11 @@
             
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                modeText.textContent = '☀️ Light Mode';
+                modeText.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -357,7 +363,7 @@
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
             }
         });
     </script>

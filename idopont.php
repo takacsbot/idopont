@@ -32,6 +32,8 @@
             --hero-bg: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
         }
 
+
+
         [data-theme="dark"] {
             --bg-color: #1a1a1a;
             --text-color: #ffffff;
@@ -51,6 +53,29 @@
             transition: all 0.3s ease;
         }
 
+        .bg {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 5rem 5%;
+            background: var(--hero-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.1;
+            border-radius: 50%;
+            transform: scale(1.5);
+        }
+   
         .theme-switch {
             position: fixed;
             top: 20px;
@@ -76,25 +101,14 @@
 
         header {
             text-align: center;
-            padding: 6rem 2rem 2rem;
-            background: var(--hero-bg);
+            padding: 2rem 2rem 2rem;
+            background: var(--card-bg);
             margin-bottom: 2rem;
             position: relative;
             overflow: hidden;
         }
 
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient);
-            opacity: 0.1;
-            border-radius: 50%;
-            transform: scale(1.5);
-        }
+
 
         header h1 {
             font-size: 2.5rem;
@@ -262,17 +276,18 @@
         }
     </style>
 </head>
-<body>
+<body class="bg">
     <button class="theme-switch" onclick="toggleTheme()">
-        <span class="mode-text">☀️ Light Mode</span>
+        <span class="mode-text">☀️</span>
     </button>
 
-    <header data-aos="fade-up">
+
+    <div class="container">
+        
+    <header>
         <h1>Időpontfoglalás</h1>
         <p>Válassz szolgáltatást és időpontot</p>
     </header>
-
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
         <h2>Foglalási adatok</h2>
         <select id="service-select" onchange="updateAvailableTimes()">
             <option value="">Válassz szolgáltatást</option>
@@ -421,11 +436,11 @@
             
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                modeText.textContent = '☀️ Light Mode';
+                modeText.textContent = '☀️';
                 localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
             }
         }
@@ -436,7 +451,7 @@
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙 Dark Mode';
+                modeText.textContent = '🌙';
             }
             updateCalendar();
         });

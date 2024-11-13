@@ -488,7 +488,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="welcome-text">
                 <h2>Üdvözöljük!</h2>
                 <p>Ha már van fiókja, jelentkezzen be és fedezze fel szolgáltatásainkat!</p>
-                <a href="#" class="login-link">Bejelentkezés</a>
+                <a href="../bejelentkezes.php" class="login-link">Bejelentkezés</a>
             </div>
         </div>
     </div>

@@ -102,7 +102,6 @@ function isLoggedIn($pdo) {
             border-radius: 16px;
         }
 
-        /* Theme switch gomb */
         .theme-switch {
             position: fixed;
             top: 20px;

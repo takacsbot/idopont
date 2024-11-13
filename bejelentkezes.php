@@ -426,7 +426,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
         <div class="register-link">
-            <p>Még nincs fiókod? <a href="#">Regisztrálj most!</a></p>
+            <p>Még nincs fiókod? <a href="../regisztracio.php">Regisztrálj most!</a></p>
         </div>
     </div>
 
