@@ -375,7 +375,6 @@ function isLoggedIn($pdo) {
             <div class="logo">Firestarter Akadémia</div>
 
             <nav>
-                <a href="#kezdolap">Kezdőlap</a>
                 <a href="./kepzeseink.html">Képzésekről</a>
                 <a href="./rolunk.html">Rólunk</a>
                 <?php if (!isLoggedIn($pdo)) {
