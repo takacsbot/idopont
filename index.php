@@ -404,7 +404,7 @@ function isLoggedIn($pdo) {
             <img src="life-coaching.jpg" alt="Life Coaching">
             <h3>LIFE COACHING</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
-            <a href="#" class="login-button">Részletek</a><br>
+            <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
@@ -412,7 +412,7 @@ function isLoggedIn($pdo) {
             <img src="business-coaching.jpg" alt="Business Coaching">
             <h3>BUSINESS COACHING</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
-            <a href="#" class="login-button">Részletek</a><br>
+            <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
@@ -420,7 +420,7 @@ function isLoggedIn($pdo) {
             <img src="mediation.jpg" alt="Mediáció">
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
-            <a href="#" class="login-button">Részletek</a><br>
+            <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
@@ -428,7 +428,7 @@ function isLoggedIn($pdo) {
             <img src="training-1.jpg" alt="Tréningek">
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
-            <a href="#" class="login-button">Részletek</a><br>
+            <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
         </div>
     </section>

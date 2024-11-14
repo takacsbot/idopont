@@ -282,6 +282,23 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
         }
+
+        @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+        }
+
+        .pulse {
+            animation: pulse 2s 3;
+        }
+
         @media (max-width: 768px) {
             .section-title {
                 font-size: 2rem;
@@ -414,6 +431,9 @@
 
 
         window.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            document.querySelector(window.location.hash).classList.add('pulse');
+        }
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
