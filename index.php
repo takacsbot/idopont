@@ -267,8 +267,6 @@ function isLoggedIn($pdo) {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .service-card::before {
@@ -302,28 +300,6 @@ function isLoggedIn($pdo) {
         .service-card p {
             color: var(--text-color);
             margin-bottom: 1.5rem;
-            flex-grow: 1;
-        }
-        .service-button {
-            background: var(--gradient);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: block;
-            width: 100%;
-        }
-        .service-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-top: auto;
         }
 
         .testimonials {
@@ -413,44 +389,59 @@ function isLoggedIn($pdo) {
         </div>
     </header>
 
+    <section class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Alakítsd át az életed velünk</h1>
+            <p>Szakértő segítség az önfejlesztésben, karrierépítésben és kapcsolataid fejlesztésében</p>
+            <div class="contact-info">
+                <p>Kapcsolat: +36 70 631 3311</p>
+            </div>
+        </div>
+    </section>
+
     <section class="services">
         <div class="service-card" data-aos="fade-up" data-aos-delay="100">
             <img src="life-coaching.jpg" alt="Life Coaching">
             <h3>LIFE COACHING</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
-            <div class="button-container">
-                <a href="#" class="service-button">Részletek</a>
-                <a href="#" class="service-button">Jelentkezés</a>
-            </div>
+            <a href="#" class="login-button">Részletek</a><br>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
             <img src="business-coaching.jpg" alt="Business Coaching">
             <h3>BUSINESS COACHING</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
-            <div class="button-container">
-                <a href="#" class="service-button">Részletek</a>
-                <a href="#" class="service-button">Jelentkezés</a>
-            </div>
+            <a href="#" class="login-button">Részletek</a><br>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
             <img src="mediation.jpg" alt="Mediáció">
             <h3>MEDIÁCIÓ</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
-            <div class="button-container">
-                <a href="#" class="service-button">Részletek</a>
-                <a href="#" class="service-button">Jelentkezés</a>
-            </div>
+            <a href="#" class="login-button">Részletek</a><br>
+            <a href="#" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
             <img src="training-1.jpg" alt="Tréningek">
             <h3>TRÉNINGEK</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
-            <div class="button-container">
-                <a href="#" class="service-button">Részletek</a>
-                <a href="#" class="service-button">Jelentkezés</a>
+            <a href="#" class="login-button">Részletek</a><br>
+            <a href="#" class="login-button">Jelentkezés</a>
+        </div>
+    </section>
+
+    <section class="testimonials">
+        <div class="testimonial-grid">
+            <div class="testimonial-card" data-aos="fade-right">
+                <p>„A coaching foglalkozások valódi megvilágosodást jelentettek számomra! Az életem új irányt vett, és sokkal magabiztosabb vagyok."</p>
+                <p>– Kata, Life Coaching ügyfél</p>
+            </div>
+            <div class="testimonial-card" data-aos="fade-left">
+                <p>„A Firestarter Akadémia üzleti coaching programja lehetővé tette, hogy fejlesszem vezetői készségeimet és megvalósítsam karrierálmaimat."</p>
+                <p>– Péter, Business Coaching ügyfél</p>
             </div>
         </div>
     </section>
