@@ -418,7 +418,7 @@ function isLoggedIn($pdo) {
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
             <img src="mediation.jpg" alt="Mediáció">
-            <h3>MEDIÁCIÓ</h3>
+            <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
             <a href="#" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
@@ -426,7 +426,7 @@ function isLoggedIn($pdo) {
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
             <img src="training-1.jpg" alt="Tréningek">
-            <h3>TRÉNINGEK</h3>
+            <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
             <a href="#" class="login-button">Részletek</a><br>
             <a href="#" class="login-button">Jelentkezés</a>
