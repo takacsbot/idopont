@@ -405,7 +405,7 @@ function isLoggedIn($pdo) {
             <h3>LIFE COACHING</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
             <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#life-coaching" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
@@ -413,7 +413,7 @@ function isLoggedIn($pdo) {
             <h3>BUSINESS COACHING</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
             <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#business-coaching" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
@@ -421,15 +421,15 @@ function isLoggedIn($pdo) {
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
             <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a>
-            <a href="./idopont.php" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#workshop" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
             <img src="training-1.jpg" alt="Tréningek">
-            <h3>Stresszkezelés és Reziliencia Workshop</h3>
+            <h3>Karriertervezés és Énmárka Építés</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
-            <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a>
-            <a href="./idopont.php" class="login-button">Jelentkezés</a>
+            <a href="./kepzeseink.html#career" class="login-button">Részletek</a>
+            <a href="./idopont.php#career" class="login-button">Jelentkezés</a>
         </div>
     </section>
 

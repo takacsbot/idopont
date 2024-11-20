@@ -291,9 +291,10 @@
         <h2>Foglalási adatok</h2>
         <select id="service-select" onchange="updateAvailableTimes()">
             <option value="">Válassz szolgáltatást</option>
-            <option value="consultation">Konzultáció</option>
-            <option value="therapy">Terápia</option>
-            <option value="coaching">Coaching</option>
+            <option value="life-coaching">Life Coaching</option>
+            <option value="business-coaching">Business Coaching</option>
+            <option value="workshop">Stresszkezelés és Reziliencia Workshop</option>
+            <option value="career">Karriertervezés és Énmárka Építés</option>
         </select>
 
         <div class="calendar-header">
@@ -445,9 +446,15 @@
             }
         }
         window.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash) {
+            console.log(window.location.hash.split('#')[1])
+            document.getElementById('service-select').value = window.location.hash.split('#')[1];
+            document.getElementById('service-select').disabled = true;
+        }
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
+            
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
