@@ -202,11 +202,11 @@ nav a {
 }
 
 .team-grid {
-    display: flex; /* Changed to flex */
-    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    display: flex;
+    flex-wrap: wrap;
     gap: 2rem;
     margin-top: 3rem;
-    justify-content: center; /* Centers the cards */
+    justify-content: center;
 }
 
 .team-member {
@@ -217,8 +217,8 @@ nav a {
     transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    width: calc(33.333% - 1.35rem); /* Calculated width for 3 columns with gap */
-    min-width: 300px; /* Minimum width for each card */
+    width: calc(33.333% - 1.35rem);
+    min-width: 300px;
 }
 
 .team-member:hover {
@@ -239,16 +239,15 @@ nav a {
     flex-direction: column;
 }
 
-/* Media query for responsive design */
 @media (max-width: 1024px) {
     .team-member {
-        width: calc(50% - 1rem); /* 2 columns on medium screens */
+        width: calc(50% - 1rem);
     }
 }
 
 @media (max-width: 768px) {
     .team-member {
-        width: 100%; /* Full width on mobile */
+        width: 100%; 
     }
 }
 .profile-button {
@@ -278,7 +277,6 @@ footer {
     margin-top: 4rem;
 }
 
-/* Responsive design */
 @media (max-width: 992px) {
     .team-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -314,7 +312,6 @@ footer {
     }
 }
 
-/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
