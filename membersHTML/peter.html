@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Kovács Péter - Firestarter Akadémia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <link rel="stylesheet" href="../membersCSS/peti.css">
+
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">Firestarter Akadémia</div>
+            <nav>
+                <button class="theme-switch" onclick="toggleTheme()">
+                    <span class="mode-text">☀️</span>
+                </button>
+                <a href="../rolunk.html">Vissza</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-container">
+        <div class="profile-header" data-aos="fade-up">
+            <img src="../img/peter.jfif" alt="Kovács Péter" class="profile-image">
+            <div class="profile-info">
+                <h1>Kovács Péter</h1>
+                <p class="profile-position">Mediátor</p>
+                <p>Péter tapasztalt mediátorként segít az ügyfeleknek konstruktívan kezelni konfliktusaikat, javítani kommunikációjukat és hatékony megoldásokat találni a személyes és szakmai életben felmerülő kihívásokra.</p>
+            </div>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-number">10+</div>
+                <p>Év tapasztalat</p>
+            </div>
+            <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-number">200+</div>
+                <p>Sikeres mediáció</p>
+            </div>
+            <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-number">350+</div>
+                <p>Coaching óra</p>
+            </div>
+        </div>
+
+        <div class="profile-sections">
+            <div class="section-card" data-aos="fade-up">
+                <h2>Szakmai háttér</h2>
+                <p>Péter jogász végzettségét az ELTE Állam- és Jogtudományi Karán szerezte, majd elvégezte a professzionális mediátori képzést. Rendszeresen vesz részt konfliktuskezelési workshopokon és szakmai konferenciákon, hogy naprakész tudással segíthesse ügyfeleit.</p>
+            </div>
+
+            <div class="section-card" data-aos="fade-up">
+                <h2>Specializációk</h2>
+                <ul class="qualification-list">
+                    <li class="qualification-item">Üzleti mediáció</li>
+                    <li class="qualification-item">Párkapcsolati konfliktuskezelés</li>
+                    <li class="qualification-item">Szervezeti konfliktusmenedzsment</li>
+                    <li class="qualification-item">Kommunikációs tréning</li>
+                </ul>
+            </div>
+
+            <div class="section-card" data-aos="fade-up">
+                <h2>Kapcsolat</h2>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <span>Email:</span>
+                        <a href="mailto:peter@firestarter.hu">peter@firestarter.hu</a>
+                    </div>
+                    <div class="contact-item">
+                        <span>Telefon:</span>
+                        <a href="tel:+36301234569">+36 30 123 4569</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
+    </footer>
+
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                modeText.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+
+</html>

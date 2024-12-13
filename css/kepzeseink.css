@@ -1,328 +1,196 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+:root {
+    --primary: #FF6B6B;
+    --secondary: #4ECDC4;
+    --dark: #2D3436;
+    --light: #F7F7F7;
+    --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
+    
+    --bg-color: #F7F7F7;
+    --text-color: #2D3436;
+    --card-bg: white;
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --testimonial-bg: rgba(255, 255, 255, 0.05);
+    --nav-link-color: #2D3436;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --testimonials-bg: #2D3436;
+    --hero-bg: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
+    --footer-bg: #F7F7F7;
+    --footer-text: #2D3436;
+}
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --card-bg: #2d2d2d;
+    --header-bg: rgba(45, 45, 45, 0.95);
+    --testimonial-bg: rgba(255, 255, 255, 0.1);
+    --nav-link-color: #ffffff;
+    --card-shadow: rgba(0, 0, 0, 0.3);
+    --testimonials-bg: #000000;
+    --hero-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    --footer-bg: #2d2d2d;
+    --footer-text: #ffffff;
+}
 
-        :root {
-            --primary: #FF6B6B;
-            --secondary: #4ECDC4;
-            --dark: #2D3436;
-            --light: #F7F7F7;
-            --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
-            
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: all 0.3s ease;
+}
 
-            --bg-color: #F7F7F7;
-            --text-color: #2D3436;
-            --card-bg: white;
-            --header-bg: rgba(255, 255, 255, 0.95);
-            --testimonial-bg: rgba(255, 255, 255, 0.05);
-            --nav-link-color: #2D3436;
-            --card-shadow: rgba(0, 0, 0, 0.1);
-            --testimonials-bg: #2D3436;
-            --hero-bg: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
-            --footer-bg: #F7F7F7;
-            --footer-text: #2D3436;
-        }
-        [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #ffffff;
-            --card-bg: #2d2d2d;
-            --header-bg: rgba(45, 45, 45, 0.95);
-            --testimonial-bg: rgba(255, 255, 255, 0.1);
-            --nav-link-color: #ffffff;
-            --card-shadow: rgba(0, 0, 0, 0.3);
-            --testimonials-bg: #000000;
-            --hero-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            --footer-bg: #2d2d2d;
-            --footer-text: #ffffff;
-        }
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            transition: all 0.3s ease;
-        }
+header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: background 0.3s ease;
+    backdrop-filter: blur(10px);
+    background: var(--header-bg);
+}
 
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-        }
-        .theme-switch {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background: var(--gradient);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s ease;
+}
 
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
 
-        .theme-switch:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
+nav a {
+    color: var(--nav-link-color);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: color 0.3s ease;
+}
 
-        header {
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            transition: background 0.3s ease;
-        }
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient);
+    transition: width 0.3s ease;
+}
 
-        header.scrolled {
-            background: var(--header-bg);
-            box-shadow: 0 2px 20px var(--card-shadow);
-        }
+nav a:hover::after {
+    width: 100%;
+}
 
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+.theme-switch {
+    background: var(--gradient);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: transform 0.3s ease;
-        }
+.theme-switch:hover {
+    transform: scale(1.05);
+}
 
-        .logo:hover {
-            transform: scale(1.05);
-        }
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5rem 5%;
+    background: var(--hero-bg);
+    text-align: center;
+}
 
-        nav {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
+.section-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
-        nav a {
-            color: var(--nav-link-color);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            padding: 0.5rem 0;
-            transition: color 0.3s ease;
-        }
+.program-description {
+    max-width: 800px;
+    margin: 0 auto 3rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
 
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient);
-            transition: width 0.3s ease;
-        }
+.training-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
 
-        nav a:hover::after {
-            width: 100%;
-        }
+.training-card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px var(--card-shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-        .content-container {
-            max-width: 1200px;
-            margin: 6rem auto 0;
-            padding: 2rem 5%;
-        }
+.training-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px var(--card-shadow);
+}
 
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 2rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.training-title {
+    font-size: 1.6rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
 
-        .program-description {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            line-height: 1.8;
-            color: var(--text-color);
-            text-align: center;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+.training-info {
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
 
-        .training-card {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px var(--card-shadow);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+.training-info strong {
+    color: var(--secondary);
+}
 
-        .training-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: var(--gradient);
-        }
+@media (max-width: 768px) {
+    .section-title {
+        font-size: 2.5rem;
+    }
 
-        .training-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px var(--card-shadow);
-        }
-
-        .training-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .training-info {
-            color: var(--text-color);
-            margin-bottom: 1rem;
-        }
-
-        .training-info strong {
-            color: var(--secondary);
-        }
-
-        .home-button {
-            background: var(--gradient);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 4px 15px var(--card-shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            z-index: 1000;
-        }
-
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 5rem 5%;
-            background: var(--hero-bg);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient);
-            opacity: 0.1;
-            border-radius: 50%;
-            transform: scale(1.5);
-        }
-
-        .hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            color: var(--text-color);
-        }
-
-        .home-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-        }
-
-        @keyframes pulse {
-        0% {
-            transform: scale(1);
-        }
-        50% {
-            transform: scale(1.1);
-        }
-        100% {
-            transform: scale(1);
-        }
-        }
-
-        .pulse {
-            animation: pulse 2s 3;
-        }
-
-        @media (max-width: 768px) {
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .program-description {
-                font-size: 1.1rem;
-            }
-
-            .training-title {
-                font-size: 1.5rem;
-            }
-
-
-            .home-button {
-                bottom: 10px;
-                right: 10px;
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-        }
-
+    .training-section {
+        grid-template-columns: 1fr;
+    }
+}
