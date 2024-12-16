@@ -64,7 +64,11 @@ function isLoggedIn($pdo)
                     echo '<a class="login-button" href="./bejelentkezes.php">Belépés/Regisztráció</a>';
                 } else {
                     echo '<a href="./profile_page.php">' . $_SESSION['username'] . '</a>';
-                } ?>
+                } 
+                if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
+                    echo '<a href="admin_panel.php" class="login-button">Admin Panel</a>';
+                }
+                ?>
 
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>

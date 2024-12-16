@@ -1,0 +1,21 @@
+.admin-panel {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+}
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.user-table th, .user-table td {
+    border: 1px solid var(--text-color);
+    padding: 0.5rem;
+    text-align: left;
+}
+.admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}

@@ -99,19 +99,18 @@ body {
 header {
     position: fixed;
     width: 100%;
-    top: 0;
     z-index: 1000;
-    background: var(--header-bg);
-    transition: all 0.3s ease;
+    transition: background 0.3s ease;
 }
 
+
 .header-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1rem 5%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .logo {
