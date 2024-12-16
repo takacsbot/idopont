@@ -10,13 +10,14 @@ $password = '';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
 
-function isLoggedIn($pdo) {
+function isLoggedIn($pdo)
+{
     $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
-    
+
     if ($token) {
         $stmt = $pdo->prepare("SELECT u.* FROM users u 
                                JOIN auth_tokens a ON u.id = a.user_id 
@@ -37,6 +38,7 @@ function isLoggedIn($pdo) {
 
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,9 +47,10 @@ function isLoggedIn($pdo) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-    <link rel="stylesheet" href="css/index.css"/>
-    
+    <link rel="stylesheet" href="css/index.css" />
+
 </head>
+
 <body>
 
     <header>
@@ -60,14 +63,17 @@ function isLoggedIn($pdo) {
                 <?php if (!isLoggedIn($pdo)) {
                     echo '<a class="login-button" href="./bejelentkezes.php">Belépés/Regisztráció</a>';
                 } else {
-                    echo $_SESSION['username'];
-                }?>
+                    echo '<a href="./profile_page.php">' . $_SESSION['username'] . '</a>';
+                } ?>
+
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
                 </button>
             </nav>
         </div>
+
     </header>
+
 
     <section class="hero">
         <div class="hero-content" data-aos="fade-up">
@@ -165,7 +171,7 @@ function isLoggedIn($pdo) {
             const body = document.body;
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
-            
+
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 modeText.textContent = '☀️';
@@ -181,7 +187,7 @@ function isLoggedIn($pdo) {
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
-            
+
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
                 modeText.textContent = '🌙';
@@ -189,4 +195,5 @@ function isLoggedIn($pdo) {
         });
     </script>
 </body>
+
 </html>
