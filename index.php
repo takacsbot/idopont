@@ -50,8 +50,6 @@ function isLoggedIn($pdo) {
 </head>
 <body>
 
-
-
     <header>
         <div class="header-content">
             <div class="logo">Firestarter Akadémia</div>
@@ -83,7 +81,7 @@ function isLoggedIn($pdo) {
 
     <section class="services">
         <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-            <img src="life-coaching.jpg" alt="Life Coaching">
+            <img src="./pictures_from_training_courses/life-coaching.jpg" alt="Life Coaching">
             <h3>LIFE COACHING</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
             <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a>
@@ -91,7 +89,7 @@ function isLoggedIn($pdo) {
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-            <img src="business-coaching.jpg" alt="Business Coaching">
+            <img src="./pictures_from_training_courses/business-coaching.jpg" alt="Business Coaching">
             <h3>BUSINESS COACHING</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
             <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a>
@@ -99,7 +97,7 @@ function isLoggedIn($pdo) {
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-            <img src="mediation.jpg" alt="Mediáció">
+            <img src="./pictures_from_training_courses/mediation.jpg" alt="Mediáció">
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
             <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a>
@@ -107,11 +105,27 @@ function isLoggedIn($pdo) {
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
-            <img src="training-1.jpg" alt="Tréningek">
+            <img src="./pictures_from_training_courses/training-1.jpg" alt="Tréningek">
             <h3>Karriertervezés és Énmárka Építés</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
             <a href="./kepzeseink.html#career" class="login-button">Részletek</a>
             <a href="./idopont.php#career" class="login-button">Jelentkezés</a>
+        </div>
+
+        <div class="service-card" data-aos="fade-up" data-aos-delay="500">
+            <img src="./pictures_from_training_courses/effective communication and conflict management.jpg" alt="Kommunikáció">
+            <h3>Hatékony Kommunikáció és Konfliktuskezelés</h3>
+            <p>Sajátítsd el a konstruktív kommunikációs technikákat a jobb kapcsolatokért</p>
+            <a href="./kepzeseink.html#communication" class="login-button">Részletek</a>
+            <a href="./idopont.php#communication" class="login-button">Jelentkezés</a>
+        </div>
+
+        <div class="service-card" data-aos="fade-up" data-aos-delay="600">
+            <img src="./pictures_from_training_courses/Mindfulness.jpg" alt="Mindfulness">
+            <h3>Mindfulness és Produktivitás Program</h3>
+            <p>Növeld koncentrációdat és hatékonyságodat tudatos jelenlét gyakorlásával</p>
+            <a href="./kepzeseink.html#mindfulness" class="login-button">Részletek</a>
+            <a href="./idopont.php#mindfulness" class="login-button">Jelentkezés</a>
         </div>
     </section>
 
@@ -132,8 +146,6 @@ function isLoggedIn($pdo) {
         <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
 
-
-
     <script>
         AOS.init({
             duration: 1000,
@@ -148,9 +160,6 @@ function isLoggedIn($pdo) {
                 header.classList.remove('scrolled');
             }
         });
-
-
-
 
         function toggleTheme() {
             const body = document.body;
@@ -168,7 +177,6 @@ function isLoggedIn($pdo) {
             }
         }
 
-
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
@@ -179,7 +187,6 @@ function isLoggedIn($pdo) {
                 modeText.textContent = '🌙';
             }
         });
-
     </script>
 </body>
 </html>

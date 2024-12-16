@@ -1,9 +1,10 @@
 .hero {
     min-height: 100vh;
     align-items: center;
-    padding: 5rem 5%;
+    padding: 5rem 0;  
     background: var(--hero-bg);
-
+    width: 100%;
+    margin: 0;
 }
 
 .hero::before {
@@ -94,10 +95,8 @@ body {
 header {
     position: fixed;
     width: 100%;
-    top: 0;
     z-index: 1000;
-    background: var(--header-bg);
-    transition: all 0.3s ease;
+    transition: background 0.3s ease;
 }
 
 .header-content {
@@ -146,9 +145,14 @@ nav a {
 }
 
 .content-container {
+    width: 100%;  
+    margin: 0;    
+    padding: 8rem 0 5rem 0; 
+}
+.inner-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 8rem 5% 5rem;
+    padding: 0 5%;
 }
 
 .section-title {
@@ -168,13 +172,16 @@ nav a {
     max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+    padding: 0 5%;
 }
 
 .values-grid {
+    max-width: 1400px;
+    margin: 4rem auto;
+    padding: 0 5%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    margin: 4rem 0;
 }
 
 .value-card {
@@ -196,16 +203,18 @@ nav a {
     color: var(--primary);
 }
 .team-section {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 1rem;
+    width: 100%;  
+    margin: 0;    
+    padding: 0;   
 }
 
 .team-grid {
+    max-width: 1400px;
+    margin: 3rem auto 0;
+    padding: 0 5%;
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    margin-top: 3rem;
     justify-content: center;
 }
 
@@ -274,7 +283,6 @@ footer {
     color: var(--text-color);
     text-align: center;
     padding: 2rem;
-    margin-top: 4rem;
 }
 
 @media (max-width: 992px) {
