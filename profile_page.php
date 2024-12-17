@@ -13,22 +13,18 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: bejelentkezes.php");
     exit();
 }
 
-// Fetch user details
 $stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Handle email update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email'])) {
     $new_email = $_POST['new_email'];
     
-    // Basic email validation
     if (filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
         $stmt = $pdo->prepare("UPDATE users SET email = ? WHERE id = ?");
         $stmt->execute([$new_email, $_SESSION['user_id']]);
@@ -39,20 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email'])) {
     }
 }
 
-// Handle password change
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     $current_password = $_POST['current_password'];
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
     
-    // Validate password change
     $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $stored_password = $stmt->fetchColumn();
     
     if (password_verify($current_password, $stored_password)) {
         if ($new_password === $confirm_password) {
-            // Hash the new password
             $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
             
             $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -94,14 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         <section class="profile-card">
             <h1>Felhasználói Profil</h1>
             
-            <!-- User Info Section -->
             <div class="user-info">
                 <h2>Felhasználói Adatok</h2>
                 <p><strong>Felhasználónév:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
             </div>
 
-            <!-- Email Update Section -->
             <div class="email-update">
                 <h2>Email Módosítása</h2>
                 <?php if (isset($success_message)): ?>
@@ -116,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                 </form>
             </div>
 
-            <!-- Password Change Section -->
             <div class="password-change">
                 <h2>Jelszó Módosítása</h2>
                 <?php if (isset($password_success_message)): ?>

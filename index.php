@@ -26,6 +26,7 @@ function isLoggedIn($pdo)
         $user = $stmt->fetch();
 
         if ($user) {
+            $_SESSION['is_admin'] = $user['is_admin'];
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['auth_token'] = $token;
@@ -66,7 +67,7 @@ function isLoggedIn($pdo)
                     echo '<a href="./profile_page.php">' . $_SESSION['username'] . '</a>';
                 } 
                 if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
-                    echo '<a href="admin_panel.php" class="login-button">Admin Panel</a>';
+                    echo '<a href="admin.php" class="login-button">Admin Panel</a>';
                 }
                 ?>
 

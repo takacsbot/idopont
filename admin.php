@@ -40,7 +40,6 @@ function isAdmin($user)
     return $user && isset($user['is_admin']) && $user['is_admin'] == 1;
 }
 
-// Handle admin actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
     $loggedInUser = isLoggedIn($pdo);
     
