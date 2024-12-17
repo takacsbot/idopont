@@ -84,11 +84,6 @@
             transition: background 0.3s ease;
         }
 
-        header.scrolled {
-            background: var(--header-bg);
-            box-shadow: 0 2px 20px var(--card-shadow);
-        }
-
         .header-content {
             display: flex;
             justify-content: space-between;
@@ -96,6 +91,9 @@
             padding: 1rem 5%;
             max-width: 1400px;
             margin: 0 auto;
+        }
+        header.hidden {
+            transform: translateY(-100%);
         }
 
         .logo {
