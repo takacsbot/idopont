@@ -93,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="password">Jelszó</label>
             </div>
             <div class="forgot-password">
-                <a href="#">Elfelejtett jelszó?</a>
+                <a href="../elfelejtett_jelszo.php">Elfelejtett jelszó?</a>
             </div>
             <button type="submit" class="button">Bejelentkezés</button>
         </form>

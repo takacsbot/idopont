@@ -11,7 +11,7 @@
     --dark: #2D3436;
     --light: #F7F7F7;
     --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
-    
+
     --bg-color: #F7F7F7;
     --text-color: #2D3436;
     --card-bg: white;
@@ -24,6 +24,7 @@
     --footer-bg: #F7F7F7;
     --footer-text: #2D3436;
 }
+
 [data-theme="dark"] {
     --bg-color: #1a1a1a;
     --text-color: #ffffff;
@@ -49,9 +50,13 @@ header {
     position: fixed;
     width: 100%;
     z-index: 1000;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+    background-color: var(--header-bg);
 }
-
+header.hidden {
+    transform: translateY(-100%);
+}
 
 
 .header-content {
@@ -183,6 +188,25 @@ nav a:hover::after {
 .training-info strong {
     color: var(--secondary);
 }
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: pulse 2s 3;
+}
+
 
 @media (max-width: 768px) {
     .section-title {

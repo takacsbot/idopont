@@ -93,7 +93,7 @@ function isLoggedIn($pdo)
     <section class="services">
         <div class="service-card" data-aos="fade-up" data-aos-delay="100">
             <img src="./pictures_from_training_courses/life-coaching.jpg" alt="Life Coaching">
-            <h3>LIFE COACHING</h3>
+            <h3>Life Coaching</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
             <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a>
             <a href="./idopont.php#life-coaching" class="login-button">Jelentkezés</a>
@@ -101,7 +101,7 @@ function isLoggedIn($pdo)
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
             <img src="./pictures_from_training_courses/business-coaching.jpg" alt="Business Coaching">
-            <h3>BUSINESS COACHING</h3>
+            <h3>Business Coaching</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
             <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a>
             <a href="./idopont.php#business-coaching" class="login-button">Jelentkezés</a>
