@@ -100,9 +100,8 @@ header {
     position: fixed;
     width: 100%;
     z-index: 1000;
-    transition: background 0.3s ease;
+    transition: transform 0.3s ease-in-out;
 }
-
 
 .header-content {
     display: flex;
