@@ -10,8 +10,8 @@ require_once 'vendor/autoload.php';
 function getGoogleClient()
 {
     $client = new Google_Client();
-    $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
-    $client->setClientSecret('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');
+    $client->setClientId('');
+    $client->setClientSecret('');
     $client->setRedirectUri('http://localhost:8000/auth/google/callback');
     $client->addScope('email');
     $client->addScope('profile');
