@@ -300,3 +300,8 @@ button[type="submit"]:hover {
         font-size: 1rem;
     }
 }
+
+.day.selected {
+    background-color: #4CAF50;
+    color: white;
+}

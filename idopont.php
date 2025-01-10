@@ -1,41 +1,83 @@
 <?php
 session_start();
+require_once 'db_config.php';
+require_once 'functions.php';
 
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-function isLoggedIn($pdo) {
-    $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
-    
-    if ($token) {
-        $stmt = $pdo->prepare("SELECT u.* FROM users u 
-                               JOIN auth_tokens a ON u.id = a.user_id 
-                               WHERE a.token = ? AND a.expires_at > NOW()");
-        $stmt->execute([$token]);
-        $user = $stmt->fetch();
-
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['auth_token'] = $token;
-            return true;
-        }
-    }
-    return false;
-}
-
-if (!isLoggedIn($pdo)) {
+$user = isLoggedIn($pdo);
+if (!$user) {
     header("Location: bejelentkezes.php");
+    exit();
+}
+
+// Handle AJAX requests
+if (isset($_GET['action'])) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    switch ($_GET['action']) {
+        case 'get_dates':
+            if (!isset($_GET['year'], $_GET['month'])) {
+                http_response_code(400);
+                exit(json_encode(['error' => 'Missing parameters']));
+            }
+
+            $year = (int)$_GET['year'];
+            $month = (int)$_GET['month'];
+            $service_id = $_GET['service_id'] ?? null;
+
+            // Get the first and last day of the month
+            $start_date = sprintf('%04d-%02d-01', $year, $month);
+            $end_date = date('Y-m-t', strtotime($start_date));
+
+            // Query to get days with available time slots
+            $sql = "SELECT DISTINCT DAY(date) as day 
+                    FROM time_slots 
+                    WHERE date BETWEEN ? AND ? 
+                    AND is_available = 1";
+            $params = [$start_date, $end_date];
+
+            if ($service_id) {
+                $sql .= " AND service_id = ?";
+                $params[] = $service_id;
+            }
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            echo json_encode($stmt->fetchAll());
+            exit();
+
+        case 'get_timeslots':
+            if (!isset($_GET['service_id'], $_GET['date'])) {
+                http_response_code(400);
+                exit(json_encode(['error' => 'Missing parameters']));
+            }
+
+            $slots = getAvailableTimeSlots($pdo, $_GET['service_id'], $_GET['date']);
+            echo json_encode($slots);
+            exit();
+    }
+}
+
+// Handle booking creation
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json; charset=utf-8');
+    
+    $data = json_decode(file_get_contents('php://input'), true);
+    $service_id = $data['service_id'] ?? null;
+    $time_slot_id = $data['time_slot_id'] ?? null;
+
+    if (!$service_id || !$time_slot_id) {
+        http_response_code(400);
+        exit(json_encode(['success' => false, 'message' => 'Missing parameters']));
+    }
+
+    $success = createBooking($pdo, $user['id'], $service_id, $time_slot_id);
+
+    if ($success) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Failed to create booking']);
+    }
     exit();
 }
 
@@ -67,12 +109,11 @@ if (!isLoggedIn($pdo)) {
         <p>Válassz szolgáltatást és időpontot</p>
     </header>
         <h2>Foglalási adatok</h2>
-        <select id="service-select" onchange="updateAvailableTimes()">
+        <select id="service-select" onchange="updateServiceSelection()">
             <option value="">Válassz szolgáltatást</option>
-            <option value="life-coaching">Life Coaching</option>
-            <option value="business-coaching">Business Coaching</option>
-            <option value="workshop">Stresszkezelés és Reziliencia Workshop</option>
-            <option value="career">Karriertervezés és Énmárka Építés</option>
+            <?php foreach(getServices($pdo) as $service): ?>
+                <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?></option>
+            <?php endforeach; ?>
         </select>
 
         <div class="calendar-header">
@@ -93,28 +134,28 @@ if (!isLoggedIn($pdo)) {
 
     <script>
         let currentDate = new Date();
-        const availableDates = {
-            0: [5, 12, 19, 26],
-            1: [3, 10, 17, 24],
-            2: [1, 8, 15, 22],
-            3: [5, 12, 19, 26],
-            4: [3, 10, 17, 24],
-            5: [1, 8, 15, 22],
-            6: [6, 13, 20, 27],
-            7: [3, 10, 17, 24],
-            8: [7, 14, 21, 28],
-            9: [5, 12, 19, 26],
-            10: [2, 9, 16, 23],
-            11: [7, 14, 21, 28]
-        };
+        
+        function getAvailableDatesForMonth(year, month) {
+            const service = document.getElementById("service-select").value;
+            const url = `idopont.php?action=get_dates&year=${year}&month=${month + 1}${service ? '&service_id=' + service : ''}`;
+            
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(dates => {
+                    return dates.map(date => parseInt(date.day));
+                })
+                .catch(error => {
+                    console.error('Error fetching dates:', error);
+                    return [];
+                });
+        }
 
-        const availableTimes = {
-            "consultation": ["09:00", "10:00", "11:00", "14:00", "15:00"],
-            "therapy": ["09:30", "10:30", "11:30", "13:30", "14:30"],
-            "coaching": ["10:00", "11:00", "12:00", "15:00", "16:00"]
-        };
-
-        function updateCalendar() {
+        async function updateCalendar() {
             const calendar = document.getElementById("calendar");
             calendar.innerHTML = "";
 
@@ -126,17 +167,29 @@ if (!isLoggedIn($pdo)) {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+            // Get available dates from server
+            const availableDates = await getAvailableDatesForMonth(year, month);
+
+            // Add empty cells for days before the first day of the month
             for (let i = 0; i < firstDay; i++) {
                 const emptyDay = document.createElement("div");
                 emptyDay.classList.add("day");
                 calendar.appendChild(emptyDay);
             }
 
+            // Create calendar days
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayDiv = document.createElement("div");
                 dayDiv.classList.add("day");
 
-                if (availableDates[month] && availableDates[month].includes(day)) {
+                // Check if date is in the past
+                const dateToCheck = new Date(year, month, day);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (dateToCheck < today) {
+                    dayDiv.classList.add("unavailable");
+                } else if (availableDates.includes(day)) {
                     dayDiv.classList.add("available");
                     dayDiv.addEventListener("click", () => selectDate(day));
                 } else {
@@ -148,64 +201,88 @@ if (!isLoggedIn($pdo)) {
             }
         }
 
-        function prevMonth() {
+        async function prevMonth() {
             const today = new Date();
             if (currentDate > today) {
                 currentDate.setMonth(currentDate.getMonth() - 1);
-                updateCalendar();
+                await updateCalendar();
             }
         }
 
-        function nextMonth() {
+        async function nextMonth() {
             const maxDate = new Date();
             maxDate.setMonth(maxDate.getMonth() + 3);
             
             if (currentDate < maxDate) {
                 currentDate.setMonth(currentDate.getMonth() + 1);
-                updateCalendar();
+                await updateCalendar();
             }
         }
 
         function selectDate(day) {
-            const service = document.getElementById("service-select").value;
-            if (service) {
-                document.getElementById("time-select").style.display = "block";
+            const allDays = document.querySelectorAll('.day');
+            allDays.forEach(d => d.classList.remove('selected'));
+            
+            const selectedDay = Array.from(allDays).find(d => d.textContent == day);
+            if (selectedDay) {
+                selectedDay.classList.add('selected');
                 updateAvailableTimes();
-                alert(`Kiválasztott dátum: ${currentDate.toLocaleString("hu-HU", { year: 'numeric', month: 'long' })} ${day}.`);
-            } else {
-                alert("Kérjük, válasszon szolgáltatást az időpontok megjelenítéséhez!");
             }
         }
 
         function updateAvailableTimes() {
             const service = document.getElementById("service-select").value;
-            const timeOptions = document.getElementById("time-options");
-            timeOptions.innerHTML = "";
-
-            if (service) {
-                const times = availableTimes[service] || [];
-                times.forEach(time => {
-                    const option = document.createElement("option");
-                    option.value = time;
-                    option.textContent = time;
-                    timeOptions.appendChild(option);
+            const selectedDate = document.querySelector(".day.selected");
+            
+            if (!service || !selectedDate) return;
+            
+            const date = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${selectedDate.textContent.padStart(2, '0')}`;
+            
+            fetch(`idopont.php?action=get_timeslots&service_id=${service}&date=${date}`)
+                .then(response => response.json())
+                .then(times => {
+                    const timeOptions = document.getElementById("time-options");
+                    timeOptions.innerHTML = "";
+                    
+                    times.forEach(slot => {
+                        const option = document.createElement("option");
+                        option.value = slot.id;
+                        option.textContent = `${slot.start_time} - ${slot.end_time}`;
+                        timeOptions.appendChild(option);
+                    });
+                    
+                    document.getElementById("time-select").style.display = "block";
                 });
-            }
         }
 
         function bookAppointment() {
-            const service = document.getElementById("service-select").value;
-            const time = document.getElementById("time-options").value;
-
-            if (!service) {
-                alert("Kérjük, válasszon szolgáltatást!");
+            const service_id = document.getElementById("service-select").value;
+            const time_slot_id = document.getElementById("time-options").value;
+            
+            if (!service_id || !time_slot_id) {
+                alert("Kérjük, válasszon szolgáltatást és időpontot!");
                 return;
             }
-            if (!time) {
-                alert("Kérjük, válasszon időpontot!");
-                return;
-            }
-            alert("Időpont foglalása sikeres: " + service + " - " + time);
+            
+            fetch('idopont.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    service_id: service_id,
+                    time_slot_id: time_slot_id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Időpont foglalása sikeres!");
+                    location.reload();
+                } else {
+                    alert("Hiba történt a foglalás során: " + data.message);
+                }
+            });
         }
 
         function toggleTheme() {
@@ -223,24 +300,28 @@ if (!isLoggedIn($pdo)) {
                 localStorage.setItem('theme', 'dark');
             }
         }
-        window.addEventListener('DOMContentLoaded', () => {
-        if (window.location.hash) {
-            console.log(window.location.hash.split('#')[1])
-            document.getElementById('service-select').value = window.location.hash.split('#')[1];
-            document.getElementById('service-select').disabled = true;
-        }
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (window.location.hash) {
+                console.log(window.location.hash.split('#')[1])
+                document.getElementById('service-select').value = window.location.hash.split('#')[1];
+                document.getElementById('service-select').disabled = true;
+            }
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
-            
             
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
                 modeText.textContent = '🌙';
             }
-            updateCalendar();
+            await updateCalendar();
         });
-</script>
+
+        function updateServiceSelection() {
+            const service = document.getElementById("service-select").value;
+            updateCalendar(); // This will now fetch dates for the selected service
+        }
+    </script>
 
 </body>
 </html>
