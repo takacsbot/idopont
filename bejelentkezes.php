@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             $_SESSION['auth_token'] = $token;
             
-            header("Location: idopont.php");
+            header("Location: index.php");
             exit();
         } else {
             $message = "Helytelen e-mail vagy jelszó.";

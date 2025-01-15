@@ -6,7 +6,7 @@ require_once 'functions.php';
 
 // Check if user is admin
 $user = isLoggedIn($pdo);
-if (!$user || !isAdmin($user)) {
+if (!$user || !isInstructor($user)) {
     header('Location: bejelentkezes.php');
     exit();
 }

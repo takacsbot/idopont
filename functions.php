@@ -19,8 +19,8 @@ function isLoggedIn($pdo) {
     return false;
 }
 
-function isAdmin($user = null) {
-    return $user && isset($user['is_admin']) && $user['is_admin'] == 1;
+function isInstructor($user = null) {
+    return $user && isset($user['is_instructor']) && $user['is_instructor'] == 1;
 }
 
 function getServices($pdo) {

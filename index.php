@@ -27,6 +27,7 @@ function isLoggedIn($pdo)
 
         if ($user) {
             $_SESSION['is_admin'] = $user['is_admin'];
+            $_SESSION['is_instructor'] = $user['is_instructor'];
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['auth_token'] = $token;
@@ -68,6 +69,9 @@ function isLoggedIn($pdo)
                 } 
                 if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
                     echo '<a href="admin.php" class="login-button">Admin Panel</a>';
+                }
+                if (isset($_SESSION['is_instructor']) && $_SESSION['is_instructor'] == 1) {
+                    echo '<a href="foglalas.php" class="login-button">Időpontok kezelése</a>';
                 }
                 ?>
 
