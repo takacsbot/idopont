@@ -58,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         $password_error_message = "Jelenlegi jelszó nem helyes!";
     }
 }
+$current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
+
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -84,53 +86,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     </header>
 
     <main class="profile-container">
-        <section class="profile-card">
-            <h1>Felhasználói Profil</h1>
-            
-            <div class="user-info">
-                <h2>Felhasználói Adatok</h2>
-                <p><strong>Felhasználónév:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
-            </div>
+        <div class="profile-wrapper">
+            <nav class="profile-nav">
+                <a href="?page=profile" class="nav-item <?php echo $current_page === 'profile' ? 'active' : ''; ?>">
+                    Profil Adatok
+                </a>
+                <a href="?page=courses" class="nav-item <?php echo $current_page === 'courses' ? 'active' : ''; ?>">
+                    Kurzusaim
+                </a>
+            </nav>
 
-            <div class="email-update">
-                <h2>Email Módosítása</h2>
-                <?php if (isset($success_message)): ?>
-                    <p class="success-message"><?php echo $success_message; ?></p>
-                <?php endif; ?>
-                <?php if (isset($error_message)): ?>
-                    <p class="error-message"><?php echo $error_message; ?></p>
-                <?php endif; ?>
-                <form method="POST">
-                    <input type="email" name="new_email" placeholder="Új email cím" required>
-                    <button type="submit" name="update_email" class="update-button">Email frissítése</button>
-                </form>
-            </div>
+            <section class="profile-content">
+                <?php if ($current_page === 'profile'): ?>
+                    <div class="profile-card">
+     
+                    <h1>Profil Adatok</h1>
+                        
+                        <div class="user-info">
+                            <h2>Felhasználói Adatok</h2>
+                            <p><strong>Felhasználónév:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
+                            <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+                        </div>
 
-            <div class="password-change">
-                <h2>Jelszó Módosítása</h2>
-                <?php if (isset($password_success_message)): ?>
-                    <p class="success-message"><?php echo $password_success_message; ?></p>
+                        <div class="email-update">
+                            <h2>Email Módosítása</h2>
+                            <?php if (isset($success_message)): ?>
+                                <p class="success-message"><?php echo $success_message; ?></p>
+                            <?php endif; ?>
+                            <?php if (isset($error_message)): ?>
+                                <p class="error-message"><?php echo $error_message; ?></p>
+                            <?php endif; ?>
+                            <form method="POST">
+                                <input type="email" name="new_email" placeholder="Új email cím" required>
+                                <button type="submit" name="update_email" class="update-button">Email frissítése</button>
+                            </form>
+                        </div>
+
+                        <div class="password-change">
+                            <h2>Jelszó Módosítása</h2>
+                            <?php if (isset($password_success_message)): ?>
+                                <p class="success-message"><?php echo $password_success_message; ?></p>
+                            <?php endif; ?>
+                            <?php if (isset($password_error_message)): ?>
+                                <p class="error-message"><?php echo $password_error_message; ?></p>
+                            <?php endif; ?>
+                            <form method="POST">
+                                <input type="password" name="current_password" placeholder="Jelenlegi jelszó" required>
+                                <input type="password" name="new_password" placeholder="Új jelszó" required>
+                                <input type="password" name="confirm_password" placeholder="Új jelszó megerősítése" required>
+                                <button type="submit" name="change_password" class="update-button">Jelszó módosítása</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php elseif ($current_page === 'courses'): ?>
+                    <div class="profile-card">
+                        <h1>Kurzusaim</h1>
+                        <!-- Itt kezdődik a korábban létrehozott kurzusok szekció -->
+                        <div class="ordered-courses">
+                            <h2>Megrendelt Kurzusok</h2>
+                            <?php if (isset($modification_success)): ?>
+                                <p class="success-message"><?php echo $modification_success; ?></p>
+                            <?php endif; ?>
+                            
+                            <?php if (empty($ordered_courses)): ?>
+                                <p class="no-courses">Még nem rendeltél kurzust.</p>
+                            <?php else: ?>
+                                <div class="courses-list">
+                                    <!-- ... (a korábban létrehozott kurzus lista kód) ... -->
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 <?php endif; ?>
-                <?php if (isset($password_error_message)): ?>
-                    <p class="error-message"><?php echo $password_error_message; ?></p>
-                <?php endif; ?>
-                <form method="POST">
-                    <input type="password" name="current_password" placeholder="Jelenlegi jelszó" required>
-                    <input type="password" name="new_password" placeholder="Új jelszó" required>
-                    <input type="password" name="confirm_password" placeholder="Új jelszó megerősítése" required>
-                    <button type="submit" name="change_password" class="update-button">Jelszó módosítása</button>
-                </form>
-            </div>
-        </section>
+            </section>
+        </div>
     </main>
 
     <footer>
         <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
-
     <script>
-        function toggleTheme() {
+function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
@@ -159,3 +195,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
     </script>
 </body>
 </html>
+

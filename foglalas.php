@@ -14,14 +14,18 @@ if (!$user || !isInstructor($user)) {
 // Handle service addition
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json; charset=utf-8');
-    
+
     // Handle AJAX requests
     if (isset($_POST['action'])) {
         try {
             switch ($_POST['action']) {
                 case 'update_settings':
-                    if (!isset($_POST['min_advance_hours'], $_POST['max_advance_days'], 
-                              $_POST['work_day_start'], $_POST['work_day_end'])) {
+                    if (!isset(
+                        $_POST['min_advance_hours'],
+                        $_POST['max_advance_days'],
+                        $_POST['work_day_start'],
+                        $_POST['work_day_end']
+                    )) {
                         throw new Exception('Missing settings parameters');
                     }
                     $settings = [
@@ -35,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = updateSettings($pdo, $settings);
                     echo json_encode(['success' => $success, 'message' => 'Settings updated successfully']);
                     break;
-                    
+
                 case 'edit':
                     if (!isset($_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'])) {
                         throw new Exception('Missing parameters');
@@ -43,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price']);
                     echo json_encode(['success' => $success, 'message' => 'Service updated successfully']);
                     break;
-                    
+
                 case 'delete':
                     if (!isset($_POST['id'])) {
                         throw new Exception('Missing ID');
@@ -51,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = deleteService($pdo, $_POST['id']);
                     echo json_encode(['success' => $success, 'message' => 'Service deleted successfully']);
                     break;
-                    
+
                 case 'confirm':
                     if (!isset($_POST['bookingId'])) {
                         throw new Exception('Missing booking ID');
@@ -59,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'confirmed');
                     echo json_encode(['success' => $success, 'message' => 'Booking confirmed successfully']);
                     break;
-                    
+
                 case 'cancel':
                     if (!isset($_POST['bookingId'])) {
                         throw new Exception('Missing booking ID');
@@ -67,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'cancelled');
                     echo json_encode(['success' => $success, 'message' => 'Booking cancelled successfully']);
                     break;
-                    
+
                 case 'get':
                     if (!isset($_POST['id'])) {
                         throw new Exception('Missing ID');
@@ -79,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Service not found');
                     }
                     break;
-                    
+
                 default:
                     throw new Exception('Invalid action');
             }
@@ -89,14 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     }
-    
+
     // Handle regular form submissions
     if (isset($_POST['name'], $_POST['duration'], $_POST['price'])) {
         // Adding service
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
-        
+
         if (addService($pdo, $name, $duration, $price)) {
             $_SESSION['success'] = "Szolgáltatás sikeresen hozzáadva!";
         } else {
@@ -104,8 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         header('Location: #services');
         exit();
-    } 
-    elseif (isset($_POST['service_id'], $_POST['date'], $_POST['start_time'], $_POST['end_time'])) {
+    } elseif (isset($_POST['service_id'], $_POST['date'], $_POST['start_time'], $_POST['end_time'])) {
         // Adding timeslot
         $service_id = filter_input(INPUT_POST, 'service_id', FILTER_SANITIZE_NUMBER_INT);
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
@@ -136,11 +139,13 @@ if (isset($_SESSION['error'])) {
 
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <title>Admin Panel - Időpontfoglalás</title>
-    <link rel="stylesheet" href="./css/foglalas.css">   
+    <link rel="stylesheet" href="foglalas.css">
 </head>
+
 <body>
     <div class="admin-container">
         <nav class="admin-nav">
@@ -150,7 +155,11 @@ if (isset($_SESSION['error'])) {
                 <li><a href="#bookings">Foglalások</a></li>
                 <li><a href="#settings">Beállítások</a></li>
             </ul>
+            <button class="theme-switch" onclick="toggleTheme()">
+        <span class="mode-text">☀️</span>
+    </button>
         </nav>
+        
 
         <div class="admin-content">
             <section id="services">
@@ -161,7 +170,7 @@ if (isset($_SESSION['error'])) {
                     <input type="number" name="price" placeholder="Ár" required>
                     <button type="submit">Hozzáadás</button>
                 </form>
-                
+
                 <table class="services-table">
                     <thead>
                         <tr>
@@ -172,16 +181,16 @@ if (isset($_SESSION['error'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach(getServices($pdo) as $service): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($service['name']) ?></td>
-                            <td><?= $service['duration'] ?> perc</td>
-                            <td><?= number_format($service['price'], 0, ',', ' ') ?> Ft</td>
-                            <td>
-                                <button onclick="editService(<?= $service['id'] ?>)">Szerkesztés</button>
-                                <button onclick="deleteService(<?= $service['id'] ?>)">Törlés</button>
-                            </td>
-                        </tr>
+                        <?php foreach (getServices($pdo) as $service): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($service['name']) ?></td>
+                                <td><?= $service['duration'] ?> perc</td>
+                                <td><?= number_format($service['price'], 0, ',', ' ') ?> Ft</td>
+                                <td>
+                                    <button onclick="editService(<?= $service['id'] ?>)">Szerkesztés</button>
+                                    <button onclick="deleteService(<?= $service['id'] ?>)">Törlés</button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -191,7 +200,7 @@ if (isset($_SESSION['error'])) {
                 <h2>Időpontok kezelése</h2>
                 <form method="POST">
                     <select name="service_id" required>
-                        <?php foreach(getServices($pdo) as $service): ?>
+                        <?php foreach (getServices($pdo) as $service): ?>
                             <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -219,17 +228,17 @@ if (isset($_SESSION['error'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach(getBookings($pdo) as $booking): ?>
-                        <tr>
-                            <td><?= $booking['date'] ?></td>
-                            <td><?= htmlspecialchars($booking['client_name']) ?></td>
-                            <td><?= htmlspecialchars($booking['service_name']) ?></td>
-                            <td><?= $booking['status'] ?></td>
-                            <td>
-                                <button onclick="confirmBooking(<?= $booking['id'] ?>)">Jóváhagyás</button>
-                                <button onclick="cancelBooking(<?= $booking['id'] ?>)">Lemondás</button>
-                            </td>
-                        </tr>
+                        <?php foreach (getBookings($pdo) as $booking): ?>
+                            <tr>
+                                <td><?= $booking['date'] ?></td>
+                                <td><?= htmlspecialchars($booking['client_name']) ?></td>
+                                <td><?= htmlspecialchars($booking['service_name']) ?></td>
+                                <td><?= $booking['status'] ?></td>
+                                <td>
+                                    <button onclick="confirmBooking(<?= $booking['id'] ?>)">Jóváhagyás</button>
+                                    <button onclick="cancelBooking(<?= $booking['id'] ?>)">Lemondás</button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -267,13 +276,13 @@ if (isset($_SESSION['error'])) {
                     <div class="setting-group">
                         <h3>Értesítések</h3>
                         <label>
-                            <input type="checkbox" name="email_notifications" 
-                           <?= $settings['email_notifications'] === 'true' ? 'checked' : '' ?>>
+                            <input type="checkbox" name="email_notifications"
+                                <?= $settings['email_notifications'] === 'true' ? 'checked' : '' ?>>
                             Email értesítések küldése
                         </label>
                         <label>
-                            <input type="checkbox" name="sms_notifications" 
-                           <?= $settings['sms_notifications'] === 'true' ? 'checked' : '' ?>>
+                            <input type="checkbox" name="sms_notifications"
+                                <?= $settings['sms_notifications'] === 'true' ? 'checked' : '' ?>>
                             SMS értesítések küldése
                         </label>
                     </div>
@@ -288,67 +297,66 @@ if (isset($_SESSION['error'])) {
         function confirmBooking(bookingId) {
             if (confirm('Biztosan jóváhagyja ezt a foglalást?')) {
                 fetch('foglalas.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=confirm&bookingId=${bookingId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload();
-                    } else {
-                        alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hiba történt a kérés feldolgozása során');
-                });
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=confirm&bookingId=${bookingId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Hiba történt a kérés feldolgozása során');
+                    });
             }
         }
 
         function cancelBooking(bookingId) {
             if (confirm('Biztosan lemondja ezt a foglalást?')) {
                 fetch('foglalas.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=cancel&bookingId=${bookingId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload();
-                    } else {
-                        alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hiba történt a kérés feldolgozása során');
-                });
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=cancel&bookingId=${bookingId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Hiba történt a kérés feldolgozása során');
+                    });
             }
         }
 
         function editService(serviceId) {
             fetch('foglalas.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `action=get&id=${serviceId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Create and show the edit modal
-                    const service = data.data;
-                    const modalHtml = `
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=get&id=${serviceId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const service = data.data;
+                        const modalHtml = `
                         <div id="editServiceModal" class="modal">
                             <div class="modal-content">
                                 <h3>Szolgáltatás szerkesztése</h3>
@@ -364,57 +372,32 @@ if (isset($_SESSION['error'])) {
                                 </form>
                             </div>
                         </div>`;
-                    
-                    document.body.insertAdjacentHTML('beforeend', modalHtml);
-                    
-                    // Add form submit handler
-                    document.getElementById('editServiceForm').addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const formData = new FormData(this);
-                        formData.append('action', 'edit');
-                        
-                        fetch('foglalas.php', {
-                            method: 'POST',
-                            body: new URLSearchParams(formData)
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                alert(result.message);
-                                location.reload();
-                            } else {
-                                alert('Hiba történt: ' + (result.error || 'Ismeretlen hiba'));
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Hiba történt a kérés feldolgozása során');
-                        });
-                    });
-                } else {
-                    alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Hiba történt a kérés feldolgozása során');
-            });
-        }
 
-        function deleteService(serviceId) {
-            if (confirm('Biztosan törli ezt a szolgáltatást?')) {
-                fetch('foglalas.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=delete&id=${serviceId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload();
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                        document.getElementById('editServiceForm').addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
+                            formData.append('action', 'edit');
+
+                            fetch('foglalas.php', {
+                                    method: 'POST',
+                                    body: new URLSearchParams(formData)
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        alert(result.message);
+                                        location.reload();
+                                    } else {
+                                        alert('Hiba történt: ' + (result.error || 'Ismeretlen hiba'));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('Hiba történt a kérés feldolgozása során');
+                                });
+                        });
                     } else {
                         alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
                     }
@@ -423,6 +406,30 @@ if (isset($_SESSION['error'])) {
                     console.error('Error:', error);
                     alert('Hiba történt a kérés feldolgozása során');
                 });
+        }
+
+        function deleteService(serviceId) {
+            if (confirm('Biztosan törli ezt a szolgáltatást?')) {
+                fetch('foglalas.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `action=delete&id=${serviceId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('Hiba történt: ' + (data.error || 'Ismeretlen hiba'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Hiba történt a kérés feldolgozása során');
+                    });
             }
         }
 
@@ -438,32 +445,57 @@ if (isset($_SESSION['error'])) {
         });
 
         function initializeCalendar() {
-            // Naptár inicializálás implementáció
         }
 
-        // Add settings form handler
         document.getElementById('settingsForm').addEventListener('submit', function(e) {
             e.preventDefault();
             fetch('foglalas.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(new FormData(this))
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Settings updated successfully');
-                } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to update settings');
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(new FormData(this))
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Settings updated successfully');
+                    } else {
+                        alert('Error: ' + (data.error || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to update settings');
+                });
         });
+        function toggleTheme() {
+        const body = document.body;
+        const button = document.querySelector('.theme-switch');
+        const modeText = button.querySelector('.mode-text');
+
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            modeText.textContent = '☀️';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            modeText.textContent = '🌙';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const button = document.querySelector('.theme-switch');
+        const modeText = button.querySelector('.mode-text');
+
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            modeText.textContent = '🌙';
+        }
+    });
     </script>
 </body>
+
 </html>
