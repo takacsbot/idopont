@@ -19,38 +19,6 @@ function getGoogleClient()
 }
 
 
-function getFacebookLoginUrl()
-{
-    $fb = new Facebook\Facebook([
-        'app_id' => 'YOUR_FACEBOOK_APP_ID',
-        'app_secret' => 'YOUR_FACEBOOK_APP_SECRET',
-        'default_graph_version' => 'v12.0',
-    ]);
-
-    $helper = $fb->getRedirectLoginHelper();
-    $permissions = ['email', 'public_profile'];
-    return $helper->getLoginUrl('http://localhost:8000/facebook-callback.php', $permissions);
-}
-
-
-function getAppleLoginUrl()
-{
-    $state = bin2hex(random_bytes(5));
-    $_SESSION['apple_state'] = $state;
-
-    $params = [
-        'response_type' => 'code',
-        'response_mode' => 'form_post',
-        'client_id' => 'YOUR_APPLE_SERVICE_ID',
-        'redirect_uri' => 'https://localhost:8000/apple-callback.php',
-        'state' => $state,
-        'scope' => 'name email'
-    ];
-
-    return 'https://appleid.apple.com/auth/authorize?' . http_build_query($params);
-}
-
-
 function handleGoogleCallback($code)
 {
     global $pdo;
@@ -206,17 +174,7 @@ if (isset($_GET['code'])) {
                             <path d="M21.8055 10.0415H21V10H12V14H17.6515C17.2571 15.1082 16.5467 16.0766 15.608 16.7855L15.6095 16.785L18.7045 19.404C18.4855 19.6025 22 17 22 12C22 11.3295 21.931 10.675 21.8055 10.0415Z" fill="#1976D2" />
                         </svg>
                     </div>
-                    <div class="social-icon facebook">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 12.05C20 7.60001 16.4 4.00001 12 4.00001C7.6 4.00001 4 7.60001 4 12.05C4 16.1 6.9 19.4 10.7 20V14.9H8.7V12.05H10.7V9.80001C10.7 7.30001 11.9 6.20001 14.1 6.20001C15.2 6.20001 16.3 6.40001 16.3 6.40001V8.30001H15C13.7 8.30001 13.3 9.00001 13.3 9.70001V12.05H16.2L15.7 14.9H13.3V20C17.1 19.4 20 16.1 20 12.05Z" fill="#1877F2" />
-                        </svg>
-                    </div>
-                    <div class="social-icon apple">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M14.94 5.19C15.88 4.03 16.49 2.57 16.33 1C15.03 1.09 13.43 1.95 12.46 3.11C11.57 4.16 10.85 5.63 11.04 7.2C12.48 7.27 14 6.42 14.94 5.19Z" fill="black" />
-                            <path d="M20.3 17.89C20.96 16.82 21.21 16.29 21.83 14.96C19.8 14.09 19.09 11.46 21.11 10.12C20.12 8.89 18.81 8.33 17.5 8.33C16.24 8.33 15.45 8.89 14.43 8.89C13.35 8.89 12.42 8.33 11.24 8.33C9.59 8.33 7.79 9.38 6.79 11.2C5.31 13.89 5.64 19.14 8.16 23C9.06 24.24 10.2 25.63 11.67 25.63C13.06 25.63 13.57 24.82 15.2 24.82C16.83 24.82 17.29 25.63 18.75 25.63C20.22 25.63 21.28 24.36 22.18 23.12C22.8 22.23 23.05 21.8 23.68 20.45C21.48 19.45 20.3 17.89 20.3 17.89Z" fill="black" />
-                        </svg>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -238,15 +196,6 @@ if (isset($_GET['code'])) {
         document.querySelector('.social-icon.google').addEventListener('click', function() {
             window.location.href = '<?php echo getGoogleClient()->createAuthUrl(); ?>';
         });
-
-        document.querySelector('.social-icon.facebook').addEventListener('click', function() {
-            window.location.href = '<?php echo getFacebookLoginUrl(); ?>';
-        });
-
-        document.querySelector('.social-icon.apple').addEventListener('click', function() {
-            window.location.href = '<?php echo getAppleLoginUrl(); ?>';
-        });
-
 
         function toggleTheme() {
             const body = document.body;

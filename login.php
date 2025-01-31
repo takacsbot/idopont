@@ -108,16 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                     </svg>
                 </div>
-                <div class="social-icon facebook">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                </div>
-                <div class="social-icon apple">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-                    </svg>
-                </div>
             </div>
         </div>
         <div class="register-link">
@@ -126,12 +116,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 
     <script>
-
         AOS.init({
             duration: 1000,
             once: true
         });
-
 
         function toggleTheme() {
             const body = document.body;
@@ -149,7 +137,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-
         window.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
@@ -161,8 +148,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
 
-    
-
         document.querySelectorAll('.social-icon').forEach(icon => {
             icon.addEventListener('mouseover', function() {
                 this.style.transform = 'translateY(-3px)';
@@ -172,25 +157,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 this.style.transform = 'translateY(0)';
             });
         });
-        
 
         function handleGoogleLogin() {
-            <?php
-            require_once 'vendor/autoload.php';
-            
-            $client = new Google_Client();
-            $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
-            $client->setClientSecret('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');
-            $client->setRedirectUri('http://localhost:8000/auth/google/callback');
-            $client->addScope('email');
-            $client->addScope('profile');
-            
-            $authUrl = $client->createAuthUrl();
-            ?>
-            
-            window.location.href = '<?php echo $authUrl; ?>';
+            window.location.href = '<?php 
+                require_once 'vendor/autoload.php';
+                
+                $client = new Google_Client();
+                $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
+                $client->setClientSecret('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');
+                $client->setRedirectUri('http://localhost:8000/auth/google/callback');
+                $client->addScope('email');
+                $client->addScope('profile');
+                
+                echo $client->createAuthUrl();
+            ?>';
         }
-
     </script>
 </body>
 </html>
