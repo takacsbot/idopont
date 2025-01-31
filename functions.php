@@ -29,11 +29,13 @@ function getServices($pdo) {
 }
 
 function addService($pdo, $name, $duration, $price) {
-    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-    
-    $stmt = $pdo->prepare("INSERT INTO services (name, duration, price, slug) 
-                          VALUES (?, ?, ?, ?)");
-    return $stmt->execute([$name, $duration, $price, $slug]);
+    try {
+        $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) VALUES (?, ?, ?)");
+        return $stmt->execute([$name, $duration, $price]);
+    } catch (PDOException $e) {
+        error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
+        return false;
+    }
 }
 
 function getService($pdo, $id) {
@@ -72,17 +74,42 @@ function getAvailableTimeSlots($pdo, $service_id, $date) {
 }
 
 function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
-    $stmt = $pdo->prepare("INSERT INTO time_slots (service_id, date, start_time, end_time, is_available) 
-                          VALUES (?, ?, ?, ?, 1)");
-    return $stmt->execute([$service_id, $date, $start_time, $end_time]);
+    try {
+        $formatted_date = date('Y-m-d', strtotime($date));
+        $formatted_start = date('H:i:s', strtotime($start_time));
+        $formatted_end = date('H:i:s', strtotime($end_time));
+        
+        if ($formatted_start >= $formatted_end) {
+            throw new Exception('A kezdő időpont nem lehet későbbi vagy egyenlő a befejező időpontnál');
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO time_slots (service_id, date, start_time, end_time, is_available) 
+                              VALUES (?, ?, ?, ?, 1)");
+        return $stmt->execute([$service_id, $formatted_date, $formatted_start, $formatted_end]);
+    } catch (Exception $e) {
+        error_log("Hiba az időpont hozzáadásakor: " . $e->getMessage());
+        return false;
+    }
 }
 
 function getBookings($pdo) {
-    $stmt = $pdo->query("SELECT b.*, u.username as client_name, s.name as service_name
-                         FROM bookings b
-                         JOIN users u ON b.user_id = u.id
-                         JOIN services s ON b.service_id = s.id
-                         ORDER BY b.date DESC");
+    $stmt = $pdo->query("
+        SELECT 
+            b.*,
+            u.username as client_name,
+            s.name as service_name,
+            t.start_time,
+            t.end_time,
+            t.date,
+            DATE_FORMAT(t.date, '%Y-%m-%d') as formatted_date,
+            DATE_FORMAT(t.start_time, '%H:%i') as formatted_start_time,
+            DATE_FORMAT(t.end_time, '%H:%i') as formatted_end_time
+        FROM bookings b
+        JOIN users u ON b.user_id = u.id
+        JOIN services s ON b.service_id = s.id
+        JOIN time_slots t ON b.time_slot_id = t.id
+        ORDER BY t.date DESC, t.start_time ASC
+    ");
     return $stmt->fetchAll();
 }
 
@@ -90,9 +117,24 @@ function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
     try {
         $pdo->beginTransaction();
         
-        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, service_id, time_slot_id, status) 
-                              VALUES (?, ?, ?, 'pending')");
-        $stmt->execute([$user_id, $service_id, $time_slot_id]);
+
+        $stmt = $pdo->prepare("SELECT date, start_time FROM time_slots WHERE id = ?");
+        $stmt->execute([$time_slot_id]);
+        $timeSlot = $stmt->fetch();
+        
+        if (!$timeSlot) {
+            throw new Exception('Időpont nem található');
+        }
+        
+        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, service_id, time_slot_id, date, start_time, status) 
+                              VALUES (?, ?, ?, ?, ?, 'pending')");
+        $stmt->execute([
+            $user_id, 
+            $service_id, 
+            $time_slot_id,
+            $timeSlot['date'],
+            $timeSlot['start_time']
+        ]);
         
         $stmt = $pdo->prepare("UPDATE time_slots SET is_available = 0 WHERE id = ?");
         $stmt->execute([$time_slot_id]);
@@ -101,6 +143,7 @@ function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
         return true;
     } catch (Exception $e) {
         $pdo->rollBack();
+        error_log("Hiba a foglalás létrehozásakor: " . $e->getMessage());
         return false;
     }
 }
@@ -159,4 +202,25 @@ function getSettings($pdo) {
     }
     
     return $settings;
+}
+
+function getUserBookings($pdo, $user_id) {
+    $stmt = $pdo->prepare("
+        SELECT 
+            b.*,
+            s.name as service_name,
+            t.start_time,
+            t.end_time,
+            t.date,
+            DATE_FORMAT(t.date, '%Y-%m-%d') as formatted_date,
+            DATE_FORMAT(t.start_time, '%H:%i') as formatted_start_time,
+            DATE_FORMAT(t.end_time, '%H:%i') as formatted_end_time
+        FROM bookings b
+        JOIN services s ON b.service_id = s.id
+        JOIN time_slots t ON b.time_slot_id = t.id
+        WHERE b.user_id = ?
+        ORDER BY t.date DESC, t.start_time ASC
+    ");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll();
 } 

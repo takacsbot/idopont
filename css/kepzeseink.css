@@ -215,3 +215,12 @@ nav a:hover::after {
         grid-template-columns: 1fr;
     }
 }
+
+.logo-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo-link:hover .logo {
+    transform: scale(1.05);
+}

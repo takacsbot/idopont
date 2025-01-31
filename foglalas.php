@@ -4,18 +4,15 @@ session_start();
 require_once 'db_config.php';
 require_once 'functions.php';
 
-// Check if user is admin
 $user = isLoggedIn($pdo);
 if (!$user || !isInstructor($user)) {
-    header('Location: bejelentkezes.php');
+    header('Location: login.php');
     exit();
 }
 
-// Handle service addition
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json; charset=utf-8');
 
-    // Handle AJAX requests
     if (isset($_POST['action'])) {
         try {
             switch ($_POST['action']) {
@@ -94,9 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Handle regular form submissions
     if (isset($_POST['name'], $_POST['duration'], $_POST['price'])) {
-        // Adding service
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
@@ -109,7 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: #services');
         exit();
     } elseif (isset($_POST['service_id'], $_POST['date'], $_POST['start_time'], $_POST['end_time'])) {
-        // Adding timeslot
         $service_id = filter_input(INPUT_POST, 'service_id', FILTER_SANITIZE_NUMBER_INT);
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
         $start_time = filter_input(INPUT_POST, 'start_time', FILTER_SANITIZE_STRING);
@@ -125,7 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Display any messages
 if (isset($_SESSION['success'])) {
     echo "<div class='alert alert-success'>" . $_SESSION['success'] . "</div>";
     unset($_SESSION['success']);
@@ -149,6 +142,7 @@ if (isset($_SESSION['error'])) {
 <body>
     <div class="admin-container">
         <nav class="admin-nav">
+            <a href="./index.php" class="logo">Firestarter Akadémia</a>
             <ul>
                 <li><a href="#services">Szolgáltatások</a></li>
                 <li><a href="#timeslots">Időpontok</a></li>
@@ -156,8 +150,8 @@ if (isset($_SESSION['error'])) {
                 <li><a href="#settings">Beállítások</a></li>
             </ul>
             <button class="theme-switch" onclick="toggleTheme()">
-        <span class="mode-text">☀️</span>
-    </button>
+                <span class="mode-text">☀️</span>
+            </button>
         </nav>
         
 
@@ -204,15 +198,18 @@ if (isset($_SESSION['error'])) {
                             <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="date" name="date" required>
-                    <input type="time" name="start_time" required>
-                    <input type="time" name="end_time" required>
+                    <input type="date" 
+                           name="date" 
+                           required 
+                           min="<?= date('Y-m-d') ?>"
+                           class="date-input">
+                    <input type="time" name="start_time" required step="900">
+                    <input type="time" name="end_time" required step="900">
                     <button type="submit">Időpont hozzáadása</button>
                 </form>
-
-                <div class="calendar-view">
-                    <!-- Calendar view implementation -->
-                </div>
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="error-message"><?= $_SESSION['error'] ?></div>
+                <?php endif; ?>
             </section>
 
             <section id="bookings">
@@ -221,6 +218,7 @@ if (isset($_SESSION['error'])) {
                     <thead>
                         <tr>
                             <th>Dátum</th>
+                            <th>Időpont</th>
                             <th>Kliens</th>
                             <th>Szolgáltatás</th>
                             <th>Státusz</th>
@@ -230,13 +228,28 @@ if (isset($_SESSION['error'])) {
                     <tbody>
                         <?php foreach (getBookings($pdo) as $booking): ?>
                             <tr>
-                                <td><?= $booking['date'] ?></td>
+                                <td><?= htmlspecialchars($booking['formatted_date']) ?></td>
+                                <td><?= htmlspecialchars($booking['formatted_start_time']) ?> - 
+                                    <?= htmlspecialchars($booking['formatted_end_time']) ?></td>
                                 <td><?= htmlspecialchars($booking['client_name']) ?></td>
                                 <td><?= htmlspecialchars($booking['service_name']) ?></td>
-                                <td><?= $booking['status'] ?></td>
                                 <td>
-                                    <button onclick="confirmBooking(<?= $booking['id'] ?>)">Jóváhagyás</button>
-                                    <button onclick="cancelBooking(<?= $booking['id'] ?>)">Lemondás</button>
+                                    <?php
+                                    $statusText = [
+                                        'pending' => 'Függőben',
+                                        'confirmed' => 'Jóváhagyva',
+                                        'cancelled' => 'Lemondva'
+                                    ];
+                                    echo $statusText[$booking['status']] ?? $booking['status'];
+                                    ?>
+                                </td>
+                                <td>
+                                    <?php if ($booking['status'] === 'pending'): ?>
+                                        <button onclick="confirmBooking(<?= $booking['id'] ?>)">Jóváhagyás</button>
+                                    <?php endif; ?>
+                                    <?php if ($booking['status'] !== 'cancelled'): ?>
+                                        <button onclick="cancelBooking(<?= $booking['id'] ?>)">Lemondás</button>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -495,6 +508,33 @@ if (isset($_SESSION['error'])) {
             modeText.textContent = '🌙';
         }
     });
+
+    function formatDate(input) {
+        let value = input.value.replace(/[^\d-]/g, '');
+        if (value.length > 10) {
+            value = value.slice(0, 10);
+        }
+
+        if (value.length >= 4 && value.charAt(4) !== '-') {
+            value = value.slice(0, 4) + '-' + value.slice(4);
+        }
+        if (value.length >= 7 && value.charAt(7) !== '-') {
+            value = value.slice(0, 7) + '-' + value.slice(7);
+        }
+        
+
+        const parts = value.split('-');
+        if (parts[0] && parts[0].length > 4) {
+            parts[0] = parts[0].slice(0, 4);
+            value = parts.join('-');
+        }
+        
+
+        if (parts[1] && parts[1].length > 2) parts[1] = parts[1].slice(0, 2);
+        if (parts[2] && parts[2].length > 2) parts[2] = parts[2].slice(0, 2);
+        
+        input.value = value;
+    }
     </script>
 </body>
 

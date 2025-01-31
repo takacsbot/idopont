@@ -12,7 +12,7 @@ function getGoogleClient()
     $client = new Google_Client();
     $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
     $client->setClientSecret('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');
-    $client->setRedirectUri('http://localhost:8000/auth/google/callback');
+    $client->setRedirectUri('http://localhost:8000/auth/google/callback.php');
     $client->addScope('email');
     $client->addScope('profile');
     return $client;
@@ -29,7 +29,7 @@ function getFacebookLoginUrl()
 
     $helper = $fb->getRedirectLoginHelper();
     $permissions = ['email', 'public_profile'];
-    return $helper->getLoginUrl('https://yourdomain.com/facebook-callback.php', $permissions);
+    return $helper->getLoginUrl('http://localhost:8000/facebook-callback.php', $permissions);
 }
 
 
@@ -42,7 +42,7 @@ function getAppleLoginUrl()
         'response_type' => 'code',
         'response_mode' => 'form_post',
         'client_id' => 'YOUR_APPLE_SERVICE_ID',
-        'redirect_uri' => 'https://yourdomain.com/apple-callback.php',
+        'redirect_uri' => 'https://localhost:8000/apple-callback.php',
         'state' => $state,
         'scope' => 'name email'
     ];
@@ -53,29 +53,53 @@ function getAppleLoginUrl()
 
 function handleGoogleCallback($code)
 {
+    global $pdo;
+    
     $client = getGoogleClient();
     $token = $client->fetchAccessTokenWithAuthCode($code);
+    $client->setAccessToken($token);
+    
     $oauth2 = new Google_Service_Oauth2($client);
     $userInfo = $oauth2->userinfo->get();
 
-
     $email = $userInfo->email;
     $name = $userInfo->name;
+    $google_id = $userInfo->id;
 
-  
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND oauth_provider = 'google'");
-    $stmt->execute([$email]);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? OR oauth_id = ?");
+    $stmt->execute([$email, $google_id]);
     $user = $stmt->fetch();
 
     if (!$user) {
-
-        $stmt = $pdo->prepare("INSERT INTO users (email, name, oauth_provider, oauth_id) VALUES (?, ?, 'google', ?)");
-        $stmt->execute([$email, $name, $userInfo->id]);
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, oauth_provider, oauth_id) VALUES (?, ?, 'google', ?)");
+        $stmt->execute([$name, $email, $google_id]);
+        $user_id = $pdo->lastInsertId();
+    } else {
+        $user_id = $user['id'];
     }
 
-
-    $_SESSION['user_id'] = $user['id'] ?? $pdo->lastInsertId();
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['username'] = $name;
     $_SESSION['email'] = $email;
+
+    $token = bin2hex(random_bytes(32));
+    $expires = time() + 86400;
+    
+    $stmt = $pdo->prepare("INSERT INTO auth_tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
+    $stmt->execute([$user_id, $token, date('Y-m-d H:i:s', $expires)]);
+    
+    setcookie('auth_token', $token, [
+        'expires' => $expires,
+        'path' => '/',
+        'httponly' => true,
+        'secure' => true,
+        'samesite' => 'Lax'
+    ]);
+    
+    $_SESSION['auth_token'] = $token;
+
+    header('Location: index.php');
+    exit();
 }
 
 
@@ -116,6 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
+if (isset($_GET['code'])) {
+    handleGoogleCallback($_GET['code']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-    <link rel="stylesheet" href="css/regisztracio.css" />
+    <link rel="stylesheet" href="css/registration.css" />
 
 </head>
 
@@ -197,7 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="welcome-text">
                 <h2>Üdvözöljük!</h2>
                 <p>Ha már van fiókja, jelentkezzen be és fedezze fel szolgáltatásainkat!</p>
-                <a href="../bejelentkezes.php" class="login-link">Bejelentkezés</a>
+                <a href="../login.php" class="login-link">Bejelentkezés</a>
             </div>
         </div>
     </div>

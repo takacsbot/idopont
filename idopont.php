@@ -9,7 +9,6 @@ if (!$user) {
     exit();
 }
 
-// Handle AJAX requests
 if (isset($_GET['action'])) {
     header('Content-Type: application/json; charset=utf-8');
 
@@ -24,11 +23,9 @@ if (isset($_GET['action'])) {
             $month = (int)$_GET['month'];
             $service_id = $_GET['service_id'] ?? null;
 
-            // Get the first and last day of the month
             $start_date = sprintf('%04d-%02d-01', $year, $month);
             $end_date = date('Y-m-t', strtotime($start_date));
 
-            // Query to get days with available time slots
             $sql = "SELECT DISTINCT DAY(date) as day 
                     FROM time_slots 
                     WHERE date BETWEEN ? AND ? 
@@ -57,7 +54,6 @@ if (isset($_GET['action'])) {
     }
 }
 
-// Handle booking creation
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json; charset=utf-8');
     
@@ -167,22 +163,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Get available dates from server
             const availableDates = await getAvailableDatesForMonth(year, month);
 
-            // Add empty cells for days before the first day of the month
             for (let i = 0; i < firstDay; i++) {
                 const emptyDay = document.createElement("div");
                 emptyDay.classList.add("day");
                 calendar.appendChild(emptyDay);
             }
 
-            // Create calendar days
             for (let day = 1; day <= daysInMonth; day++) {
                 const dayDiv = document.createElement("div");
                 dayDiv.classList.add("day");
-
-                // Check if date is in the past
                 const dateToCheck = new Date(year, month, day);
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
@@ -319,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         function updateServiceSelection() {
             const service = document.getElementById("service-select").value;
-            updateCalendar(); // This will now fetch dates for the selected service
+            updateCalendar();
         }
     </script>
 

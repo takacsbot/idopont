@@ -62,6 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
                 $stmt->execute([$hashedPassword, $_POST['user_id']]);
             }
             break;
+
+        case 'toggle_instructor':
+            if (isset($_POST['user_id'])) {
+                $stmt = $pdo->prepare("SELECT is_instructor FROM users WHERE id = ?");
+                $stmt->execute([$_POST['user_id']]);
+                $current = $stmt->fetchColumn();
+                
+                $stmt = $pdo->prepare("UPDATE users SET is_instructor = ? WHERE id = ?");
+                $stmt->execute([!$current, $_POST['user_id']]);
+            }
+            break;
     }
 
 
@@ -72,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
 
 function getUsersList($pdo)
 {
-    $stmt = $pdo->query("SELECT id, username, email, is_admin FROM users ORDER BY id");
+    $stmt = $pdo->query("SELECT id, username, email, is_admin, is_instructor FROM users ORDER BY id");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
@@ -89,6 +100,19 @@ function getUsersList($pdo)
     
 </head>
 <body>
+    <header>
+        <div class="header-content">
+            <a href="./index.php" class="logo">Firestarter Akadémia</a>
+            <nav>
+                <a href="./index.php">Főoldal</a>
+                <a href="./logout.php" class="logout-button">Kijelentkezés</a>
+                <button class="theme-switch" onclick="toggleTheme()">
+                    <span class="mode-text">☀️</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
     <?php
     $loggedInUser = isLoggedIn($pdo);
     
@@ -100,6 +124,16 @@ function getUsersList($pdo)
 
     <div class="admin-panel">
         <h1>Adminisztrátori Felület</h1>
+        
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="userSearch" 
+                placeholder="Keresés felhasználónév vagy email alapján..."
+                class="search-input"
+            >
+        </div>
+
         <table class="user-table">
             <thead>
                 <tr>
@@ -107,6 +141,7 @@ function getUsersList($pdo)
                     <th>Felhasználónév</th>
                     <th>Email</th>
                     <th>Admin</th>
+                    <th>Oktató</th>
                     <th>Műveletek</th>
                 </tr>
             </thead>
@@ -120,6 +155,7 @@ function getUsersList($pdo)
                     <td><?php echo htmlspecialchars($user['username']); ?></td>
                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                     <td><?php echo $user['is_admin'] ? 'Igen' : 'Nem'; ?></td>
+                    <td><?php echo $user['is_instructor'] ? 'Igen' : 'Nem'; ?></td>
                     <td>
                         <div class="admin-actions">
                             <form method="post" onsubmit="return confirm('Biztosan törölni szeretné a felhasználót?');">
@@ -128,6 +164,13 @@ function getUsersList($pdo)
                                 <button type="submit" class="login-button">Törlés</button>
                             </form>
                             <button onclick="showPasswordReset(<?php echo $user['id']; ?>)" class="login-button">Jelszó módosítás</button>
+                            <form method="post">
+                                <input type="hidden" name="admin_action" value="toggle_instructor">
+                                <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                <button type="submit" class="login-button instructor-toggle">
+                                    <?php echo $user['is_instructor'] ? 'Oktató jogkör elvétele' : 'Oktató jogkör adása'; ?>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -160,6 +203,50 @@ function getUsersList($pdo)
         function closePasswordReset() {
             document.getElementById('passwordResetModal').style.display = 'none';
         }
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                modeText.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+            }
+        });
+
+        // Keresési funkció hozzáadása
+        document.getElementById('userSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.user-table tbody tr');
+            
+            rows.forEach(row => {
+                const username = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                
+                if (username.includes(searchTerm) || email.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>

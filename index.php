@@ -63,7 +63,7 @@ function isLoggedIn($pdo)
                 <a href="./kepzeseink.html">Képzésekről</a>
                 <a href="./rolunk.html">Rólunk</a>
                 <?php if (!isLoggedIn($pdo)) {
-                    echo '<a class="login-button" href="./bejelentkezes.php">Belépés/Regisztráció</a>';
+                    echo '<a class="login-button" href="./login.php">Belépés/Regisztráció</a>';
                 } else {
                     echo '<a href="./profile_page.php">' . $_SESSION['username'] . '</a>';
                 } 
@@ -100,7 +100,7 @@ function isLoggedIn($pdo)
             <h3>Life Coaching</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
             <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php#life-coaching" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#1" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="200">
@@ -108,7 +108,7 @@ function isLoggedIn($pdo)
             <h3>Business Coaching</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
             <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php#business-coaching" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#2" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="300">
@@ -116,7 +116,7 @@ function isLoggedIn($pdo)
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
             <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a>
-            <a href="./idopont.php#workshop" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#3" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="400">
@@ -124,7 +124,7 @@ function isLoggedIn($pdo)
             <h3>Karriertervezés és Énmárka Építés</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
             <a href="./kepzeseink.html#career" class="login-button">Részletek</a>
-            <a href="./idopont.php#career" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#5" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="500">
@@ -132,7 +132,7 @@ function isLoggedIn($pdo)
             <h3>Hatékony Kommunikáció és Konfliktuskezelés</h3>
             <p>Sajátítsd el a konstruktív kommunikációs technikákat a jobb kapcsolatokért</p>
             <a href="./kepzeseink.html#communication" class="login-button">Részletek</a>
-            <a href="./idopont.php#communication" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#6" class="login-button">Jelentkezés</a>
         </div>
 
         <div class="service-card" data-aos="fade-up" data-aos-delay="600">
@@ -140,7 +140,7 @@ function isLoggedIn($pdo)
             <h3>Mindfulness és Produktivitás Program</h3>
             <p>Növeld koncentrációdat és hatékonyságodat tudatos jelenlét gyakorlásával</p>
             <a href="./kepzeseink.html#mindfulness" class="login-button">Részletek</a>
-            <a href="./idopont.php#mindfulness" class="login-button">Jelentkezés</a>
+            <a href="./idopont.php#7" class="login-button">Jelentkezés</a>
         </div>
     </section>
 

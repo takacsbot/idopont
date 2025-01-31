@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -64,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-    <link rel="stylesheet" href="css/bejelentkezes.css"/>
+    <link rel="stylesheet" href="css/login.css"/>
 </head>
 <body>
     <button class="theme-switch" onclick="toggleTheme()">
@@ -101,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="social-login">
             <p>Vagy jelentkezz be</p>
             <div class="social-icons">
-                <div class="social-icon google">
+                <div class="social-icon google" onclick="handleGoogleLogin()">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -122,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
         <div class="register-link">
-            <p>Még nincs fiókod? <a href="../regisztracio.php">Regisztrálj most!</a></p>
+            <p>Még nincs fiókod? <a href="../registration.php">Regisztrálj most!</a></p>
         </div>
     </div>
 
@@ -175,6 +174,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
         
 
+        function handleGoogleLogin() {
+            <?php
+            require_once 'vendor/autoload.php';
+            
+            $client = new Google_Client();
+            $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
+            $client->setClientSecret('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');
+            $client->setRedirectUri('http://localhost:8000/auth/google/callback');
+            $client->addScope('email');
+            $client->addScope('profile');
+            
+            $authUrl = $client->createAuthUrl();
+            ?>
+            
+            window.location.href = '<?php echo $authUrl; ?>';
+        }
 
     </script>
 </body>

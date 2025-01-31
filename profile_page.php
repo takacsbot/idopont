@@ -22,6 +22,10 @@ $stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+require_once 'functions.php';
+
+$user_bookings = getUserBookings($pdo, $_SESSION['user_id']);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email'])) {
     $new_email = $_POST['new_email'];
     
@@ -73,7 +77,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
 <body>
     <header>
         <div class="header-content">
-            <div class="logo">Firestarter Akadémia</div>
+            <a href="./index.php" class="logo">Firestarter Akadémia</a>
             <nav>
                 <a href="./index.php">Főoldal</a>
                 <a href="./kepzeseink.html">Képzések</a>
@@ -141,18 +145,42 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
                 <?php elseif ($current_page === 'courses'): ?>
                     <div class="profile-card">
                         <h1>Kurzusaim</h1>
-                        <!-- Itt kezdődik a korábban létrehozott kurzusok szekció -->
                         <div class="ordered-courses">
-                            <h2>Megrendelt Kurzusok</h2>
-                            <?php if (isset($modification_success)): ?>
-                                <p class="success-message"><?php echo $modification_success; ?></p>
-                            <?php endif; ?>
-                            
-                            <?php if (empty($ordered_courses)): ?>
-                                <p class="no-courses">Még nem rendeltél kurzust.</p>
+                            <h2>Foglalásaim</h2>
+                            <?php if (empty($user_bookings)): ?>
+                                <p class="no-courses">Még nincs foglalásod.</p>
                             <?php else: ?>
-                                <div class="courses-list">
-                                    <!-- ... (a korábban létrehozott kurzus lista kód) ... -->
+                                <div class="bookings-list">
+                                    <table class="bookings-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Dátum</th>
+                                                <th>Időpont</th>
+                                                <th>Szolgáltatás</th>
+                                                <th>Státusz</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($user_bookings as $booking): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($booking['formatted_date']) ?></td>
+                                                    <td><?= htmlspecialchars($booking['formatted_start_time']) ?> - 
+                                                        <?= htmlspecialchars($booking['formatted_end_time']) ?></td>
+                                                    <td><?= htmlspecialchars($booking['service_name']) ?></td>
+                                                    <td>
+                                                        <?php
+                                                        $statusText = [
+                                                            'pending' => 'Függőben',
+                                                            'confirmed' => 'Jóváhagyva',
+                                                            'cancelled' => 'Lemondva'
+                                                        ];
+                                                        echo $statusText[$booking['status']] ?? $booking['status'];
+                                                        ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             <?php endif; ?>
                         </div>

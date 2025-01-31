@@ -121,6 +121,14 @@ header.hidden {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+.logo-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo-link:hover .logo {
+    transform: scale(1.05);
+}
 
 nav {
     display: flex;
