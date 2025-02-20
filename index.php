@@ -60,7 +60,7 @@ function isLoggedIn($pdo)
             <div class="logo">Firestarter Akadémia</div>
 
             <nav>
-                <a href="./kepzeseink.html">Képzésekről</a>
+                <a href="./kepzeseink.php">Képzésekről</a>
                 <a href="./rolunk.html">Rólunk</a>
                 <?php if (!isLoggedIn($pdo)) {
                     echo '<a class="login-button" href="./login.php">Belépés/Regisztráció</a>';
@@ -99,7 +99,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/life-coaching.jpg" alt="Life Coaching">
             <h3>Life Coaching</h3>
             <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
-            <a href="./kepzeseink.html#life-coaching" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#life-coaching" class="login-button">Részletek</a>
             <a href="./idopont.php#1" class="login-button">Jelentkezés</a>
         </div>
 
@@ -107,7 +107,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/business-coaching.jpg" alt="Business Coaching">
             <h3>Business Coaching</h3>
             <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
-            <a href="./kepzeseink.html#business-coaching" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#business-coaching" class="login-button">Részletek</a>
             <a href="./idopont.php#2" class="login-button">Jelentkezés</a>
         </div>
 
@@ -115,7 +115,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/mediation.jpg" alt="Mediáció">
             <h3>Stresszkezelés és Reziliencia Workshop</h3>
             <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
-            <a href="./kepzeseink.html#workshop" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#workshop" class="login-button">Részletek</a>
             <a href="./idopont.php#3" class="login-button">Jelentkezés</a>
         </div>
 
@@ -123,7 +123,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/training-1.jpg" alt="Tréningek">
             <h3>Karriertervezés és Énmárka Építés</h3>
             <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
-            <a href="./kepzeseink.html#career" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#career" class="login-button">Részletek</a>
             <a href="./idopont.php#5" class="login-button">Jelentkezés</a>
         </div>
 
@@ -131,7 +131,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/effective communication and conflict management.jpg" alt="Kommunikáció">
             <h3>Hatékony Kommunikáció és Konfliktuskezelés</h3>
             <p>Sajátítsd el a konstruktív kommunikációs technikákat a jobb kapcsolatokért</p>
-            <a href="./kepzeseink.html#communication" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#communication" class="login-button">Részletek</a>
             <a href="./idopont.php#6" class="login-button">Jelentkezés</a>
         </div>
 
@@ -139,7 +139,7 @@ function isLoggedIn($pdo)
             <img src="./pictures_from_training_courses/Mindfulness.jpg" alt="Mindfulness">
             <h3>Mindfulness és Produktivitás Program</h3>
             <p>Növeld koncentrációdat és hatékonyságodat tudatos jelenlét gyakorlásával</p>
-            <a href="./kepzeseink.html#mindfulness" class="login-button">Részletek</a>
+            <a href="./kepzeseink.php#mindfulness" class="login-button">Részletek</a>
             <a href="./idopont.php#7" class="login-button">Jelentkezés</a>
         </div>
     </section>

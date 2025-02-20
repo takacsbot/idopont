@@ -198,11 +198,18 @@ if (isset($_SESSION['error'])) {
                             <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="date" 
-                           name="date" 
-                           required 
-                           min="<?= date('Y-m-d') ?>"
-                           class="date-input">
+                    <div class="date-input-container">
+                        <input type="text" 
+                               name="date" 
+                               required 
+                               placeholder="ÉÉÉÉ-HH-NN"
+                               pattern="\d{4}-\d{2}-\d{2}"
+                               minlength="10"
+                               maxlength="10"
+                               value="<?= date('Y-m-d') ?>"
+                               oninput="formatDate(this)">
+                        <span class="calendar-icon"></span>
+                    </div>
                     <input type="time" name="start_time" required step="900">
                     <input type="time" name="end_time" required step="900">
                     <button type="submit">Időpont hozzáadása</button>
@@ -455,6 +462,13 @@ if (isset($_SESSION['error'])) {
 
         document.addEventListener('DOMContentLoaded', function() {
             initializeCalendar();
+            
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    formatDate(this);
+                });
+            });
         });
 
         function initializeCalendar() {
@@ -510,30 +524,25 @@ if (isset($_SESSION['error'])) {
     });
 
     function formatDate(input) {
-        let value = input.value.replace(/[^\d-]/g, '');
-        if (value.length > 10) {
-            value = value.slice(0, 10);
+        let value = input.value.replace(/\D/g, '');
+        
+        if (value.length > 8) {
+            value = value.slice(0, 8);
         }
-
-        if (value.length >= 4 && value.charAt(4) !== '-') {
-            value = value.slice(0, 4) + '-' + value.slice(4);
-        }
-        if (value.length >= 7 && value.charAt(7) !== '-') {
-            value = value.slice(0, 7) + '-' + value.slice(7);
+        let formattedValue = '';
+        if (value.length > 0) {
+            formattedValue = value.slice(0, Math.min(4, value.length));
+            
+            if (value.length > 4) {
+                formattedValue += '-' + value.slice(4, Math.min(6, value.length));
+            }
+            
+            if (value.length > 6) {
+                formattedValue += '-' + value.slice(6, 8);
+            }
         }
         
-
-        const parts = value.split('-');
-        if (parts[0] && parts[0].length > 4) {
-            parts[0] = parts[0].slice(0, 4);
-            value = parts.join('-');
-        }
-        
-
-        if (parts[1] && parts[1].length > 2) parts[1] = parts[1].slice(0, 2);
-        if (parts[2] && parts[2].length > 2) parts[2] = parts[2].slice(0, 2);
-        
-        input.value = value;
+        input.value = formattedValue;
     }
     </script>
 </body>

@@ -28,10 +28,11 @@ function getServices($pdo) {
     return $stmt->fetchAll();
 }
 
-function addService($pdo, $name, $duration, $price) {
+function addService($pdo, $name, $description, $recommended_time, $recommended_to, $duration, $price) {
     try {
-        $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) VALUES (?, ?, ?)");
-        return $stmt->execute([$name, $duration, $price]);
+        $stmt = $pdo->prepare("INSERT INTO services (name, description, recommended_time, recommended_to, duration, price) 
+                              VALUES (?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([$name, $description, $recommended_time, $recommended_to, $duration, $price]);
     } catch (PDOException $e) {
         error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
         return false;
@@ -44,10 +45,12 @@ function getService($pdo, $id) {
     return $stmt->fetch();
 }
 
-function editService($pdo, $id, $name, $duration, $price) {
-    $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-    $stmt = $pdo->prepare("UPDATE services SET name = ?, duration = ?, price = ?, slug = ? WHERE id = ?");
-    return $stmt->execute([$name, $duration, $price, $slug, $id]);
+function editService($pdo, $id, $name, $description, $recommended_time, $recommended_to, $duration, $price) {
+    $stmt = $pdo->prepare("UPDATE services 
+                          SET name = ?, description = ?, recommended_time = ?, 
+                              recommended_to = ?, duration = ?, price = ? 
+                          WHERE id = ?");
+    return $stmt->execute([$name, $description, $recommended_time, $recommended_to, $duration, $price, $id]);
 }
 
 function deleteService($pdo, $id) {
@@ -126,14 +129,13 @@ function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
             throw new Exception('Időpont nem található');
         }
         
-        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, service_id, time_slot_id, date, start_time, status) 
-                              VALUES (?, ?, ?, ?, ?, 'pending')");
+        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, service_id, time_slot_id, date, status) 
+                              VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([
             $user_id, 
             $service_id, 
             $time_slot_id,
-            $timeSlot['date'],
-            $timeSlot['start_time']
+            $timeSlot['date']
         ]);
         
         $stmt = $pdo->prepare("UPDATE time_slots SET is_available = 0 WHERE id = ?");
@@ -223,4 +225,24 @@ function getUserBookings($pdo, $user_id) {
     ");
     $stmt->execute([$user_id]);
     return $stmt->fetchAll();
+}
+
+function cancelBooking($pdo, $booking_id, $user_id) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM bookings WHERE id = ? AND user_id = ?");
+        $stmt->execute([$booking_id, $user_id]);
+        $booking = $stmt->fetch();
+        
+        if (!$booking) {
+            throw new Exception('Érvénytelen foglalás');
+        }
+        
+        $stmt = $pdo->prepare("UPDATE bookings SET status = 'cancelled' WHERE id = ?");
+        $stmt->execute([$booking_id]);
+        
+        return true;
+    } catch(Exception $e) {
+        error_log("Hiba a foglalás lemondásakor: " . $e->getMessage());
+        throw $e;
+    }
 } 

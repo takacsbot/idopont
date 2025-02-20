@@ -231,7 +231,6 @@ function getUsersList($pdo)
             }
         });
 
-        // Keresési funkció hozzáadása
         document.getElementById('userSearch').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('.user-table tbody tr');

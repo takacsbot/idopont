@@ -62,6 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         $password_error_message = "Jelenlegi jelszó nem helyes!";
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
+    try {
+        $booking_id = $_POST['booking_id'];
+        cancelBooking($pdo, $booking_id, $_SESSION['user_id']);
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?page=courses&success=cancelled');
+        exit;
+    } catch (Exception $e) {
+        header('Location: ' . $_SERVER['PHP_SELF'] . '?page=courses&error=' . urlencode($e->getMessage()));
+        exit;
+    }
+}
+
 $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
 
 ?>
@@ -145,6 +158,12 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
                 <?php elseif ($current_page === 'courses'): ?>
                     <div class="profile-card">
                         <h1>Kurzusaim</h1>
+                        <?php if (isset($_GET['success']) && $_GET['success'] === 'cancelled'): ?>
+                            <div class="success-message">A foglalás sikeresen lemondva!</div>
+                        <?php endif; ?>
+                        <?php if (isset($_GET['error'])): ?>
+                            <div class="error-message">Hiba történt: <?php echo htmlspecialchars($_GET['error']); ?></div>
+                        <?php endif; ?>
                         <div class="ordered-courses">
                             <h2>Foglalásaim</h2>
                             <?php if (empty($user_bookings)): ?>
@@ -158,6 +177,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
                                                 <th>Időpont</th>
                                                 <th>Szolgáltatás</th>
                                                 <th>Státusz</th>
+                                                <th>Műveletek</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -176,6 +196,14 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
                                                         ];
                                                         echo $statusText[$booking['status']] ?? $booking['status'];
                                                         ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ($booking['status'] !== 'cancelled'): ?>
+                                                            <button class="action-button" 
+                                                                    onclick="confirmCancel(<?= $booking['id'] ?>)">
+                                                                Lemondás
+                                                            </button>
+                                                        <?php endif; ?>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -220,6 +248,29 @@ function toggleTheme() {
                 modeText.textContent = '🌙';
             }
         });
+
+function confirmCancel(bookingId) {
+    if (confirm('Biztosan le szeretnéd mondani ezt a foglalást?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'cancel_booking';
+        input.value = 'true';
+        
+        const bookingInput = document.createElement('input');
+        bookingInput.type = 'hidden';
+        bookingInput.name = 'booking_id';
+        bookingInput.value = bookingId;
+        
+        form.appendChild(input);
+        form.appendChild(bookingInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
     </script>
 </body>
 </html>
