@@ -53,6 +53,10 @@ A projekthez való hozzájárulást szívesen fogadjuk. Kérjük, kövesse a kö
 2. Hozzon létre egy új branch-et
 3. Commitolja a változtatásokat
 4. Nyisson egy Pull Request-et
+
+### 👨‍💼 Fejlesztők
+> - Balogh Richárd
+> - Takács Botond
 ## Licensz
 *MIT License
 ---
