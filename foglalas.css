@@ -153,6 +153,7 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     margin-top: 1.5rem;
+    color: inherit;
 }
 
 th, td {
@@ -168,6 +169,24 @@ th {
 
 tr:hover {
     background: var(--bg-color);
+}
+
+.services-table td,
+.services-table th,
+.bookings-table td,
+.bookings-table th {
+    color: inherit;
+}
+
+[data-theme="dark"] table {
+    color: #fff;
+}
+
+[data-theme="dark"] .services-table td,
+[data-theme="dark"] .services-table th,
+[data-theme="dark"] .bookings-table td,
+[data-theme="dark"] .bookings-table th {
+    color: #fff;
 }
 
 .setting-group {

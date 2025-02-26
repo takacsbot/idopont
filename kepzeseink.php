@@ -63,6 +63,7 @@
     </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
+        document.body.setAttribute('data-theme', 'dark');
         AOS.init({
             duration: 1000,
             once: true

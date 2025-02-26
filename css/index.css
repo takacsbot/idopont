@@ -11,16 +11,14 @@
             --dark: #2D3436;
             --light: #F7F7F7;
             --gradient: linear-gradient(135deg, #FF6B6B, #FFA07A);
-            
-
             --bg-color: #F7F7F7;
             --text-color: #2D3436;
             --card-bg: white;
             --header-bg: rgba(255, 255, 255, 0.95);
-            --testimonial-bg: rgba(255, 255, 255, 0.05);
+            --testimonials-bg: white;
+            --testimonials-text: #2D3436;
             --nav-link-color: #2D3436;
             --card-shadow: rgba(0, 0, 0, 0.1);
-            --testimonials-bg: #2D3436;
             --hero-bg: linear-gradient(135deg, #F6F6F6 0%, #FFFFFF 100%);
             --footer-bg: #F7F7F7;
             --footer-text: #2D3436;
@@ -35,6 +33,7 @@
             --nav-link-color: #ffffff;
             --card-shadow: rgba(0, 0, 0, 0.3);
             --testimonials-bg: #000000;
+            --testimonials-text: white;
             --hero-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             --footer-bg: #2d2d2d;
             --footer-text: #ffffff;
@@ -254,7 +253,7 @@
 
         .testimonials {
             background: var(--testimonials-bg);
-            color: white;
+            color: var(--testimonials-text);
             padding: 5rem 5%;
         }
 

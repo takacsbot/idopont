@@ -114,7 +114,7 @@
 .success-message {
     color: var(--secondary);
     background: rgba(78, 205, 196, 0.1);
-    padding: 0.8rem;  /* Increased padding */
+    padding: 0.8rem;
     border-radius: 8px;
     text-align: center;
     margin: 1rem 0;
@@ -123,7 +123,7 @@
 .error-message {
     color: var(--primary);
     background: rgba(255, 107, 107, 0.1);
-    padding: 0.8rem;  /* Increased padding */
+    padding: 0.8rem;
     border-radius: 8px;
     text-align: center;
     margin: 1rem 0;

@@ -23,7 +23,7 @@ $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 require_once 'functions.php';
-
+deleteOldBookings($pdo);
 $user_bookings = getUserBookings($pdo, $_SESSION['user_id']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_email'])) {
@@ -93,7 +93,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
             <a href="./index.php" class="logo">Firestarter Akadémia</a>
             <nav>
                 <a href="./index.php">Főoldal</a>
-                <a href="./kepzeseink.html">Képzések</a>
+                <a href="./kepzeseink.php">Képzések</a>
                 <a href="./logout.php" class="logout-button">Kijelentkezés</a>
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
@@ -219,7 +219,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
     </main>
 
     <footer>
-        <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
+        <p>&copy; 2024-2025 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
     <script>
 function toggleTheme() {

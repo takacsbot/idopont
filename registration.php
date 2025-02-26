@@ -4,7 +4,6 @@ $dbname = 'timetable_db';
 $username = 'root';
 $password = '';
 
-
 require_once 'vendor/autoload.php';
 
 function getGoogleClient()
@@ -101,6 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             try {
                 $stmt->execute([$username, $email, $hashed_password]);
+                sendEmail($email, 'Regisztráció', 'Sikeres regisztráció!');
                 $message = "Regisztráció sikeres!";
             } catch (PDOException $e) {
                 $message = "Regisztráció sikertelen: " . $e->getMessage();

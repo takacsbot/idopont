@@ -281,7 +281,6 @@ nav a {
     box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
 }
 
-/* Footer */
 footer {
     background: var(--card-bg);
     color: var(--text-color);

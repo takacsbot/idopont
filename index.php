@@ -6,7 +6,6 @@ $dbname = 'timetable_db';
 $username = 'root';
 $password = '';
 
-
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -14,28 +13,10 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-function isLoggedIn($pdo)
-{
-    $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
+require_once 'functions.php';
 
-    if ($token) {
-        $stmt = $pdo->prepare("SELECT u.* FROM users u 
-                               JOIN auth_tokens a ON u.id = a.user_id 
-                               WHERE a.token = ? AND a.expires_at > NOW()");
-        $stmt->execute([$token]);
-        $user = $stmt->fetch();
-
-        if ($user) {
-            $_SESSION['is_admin'] = $user['is_admin'];
-            $_SESSION['is_instructor'] = $user['is_instructor'];
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['auth_token'] = $token;
-            return true;
-        }
-    }
-    return false;
-}
+$user = isLoggedIn($pdo);
+$services = getServices($pdo);
 ?>
 
 <!DOCTYPE html>
@@ -62,16 +43,16 @@ function isLoggedIn($pdo)
             <nav>
                 <a href="./kepzeseink.php">Képzésekről</a>
                 <a href="./rolunk.html">Rólunk</a>
-                <?php if (!isLoggedIn($pdo)) {
+                <?php if (!$user) {
                     echo '<a class="login-button" href="./login.php">Belépés/Regisztráció</a>';
                 } else {
-                    echo '<a href="./profile_page.php">' . $_SESSION['username'] . '</a>';
+                    echo '<a href="./profile_page.php">' . htmlspecialchars($user['username']) . '</a>';
                 } 
-                if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
-                    echo '<a href="admin.php" class="login-button">Admin Panel</a>';
-                }
-                if (isset($_SESSION['is_instructor']) && $_SESSION['is_instructor'] == 1) {
+                if (isInstructor($user)) {
                     echo '<a href="foglalas.php" class="login-button">Időpontok kezelése</a>';
+                }
+                if (isAdmin($user)) {
+                    echo '<a href="admin.php" class="login-button">Admin Panel</a>';
                 }
                 ?>
 
@@ -95,53 +76,23 @@ function isLoggedIn($pdo)
     </section>
 
     <section class="services">
-        <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-            <img src="./pictures_from_training_courses/life-coaching.jpg" alt="Life Coaching">
-            <h3>Life Coaching</h3>
-            <p>Fedezd fel önmagad és valósítsd meg céljaidat szakértő támogatással</p>
-            <a href="./kepzeseink.php#life-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php#1" class="login-button">Jelentkezés</a>
-        </div>
-
-        <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-            <img src="./pictures_from_training_courses/business-coaching.jpg" alt="Business Coaching">
-            <h3>Business Coaching</h3>
-            <p>Fejleszd vezetői készségeidet és vidd sikerre vállalkozásod</p>
-            <a href="./kepzeseink.php#business-coaching" class="login-button">Részletek</a>
-            <a href="./idopont.php#2" class="login-button">Jelentkezés</a>
-        </div>
-
-        <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-            <img src="./pictures_from_training_courses/mediation.jpg" alt="Mediáció">
-            <h3>Stresszkezelés és Reziliencia Workshop</h3>
-            <p>Oldd meg konfliktusaidat professzionális segítséggel</p>
-            <a href="./kepzeseink.php#workshop" class="login-button">Részletek</a>
-            <a href="./idopont.php#3" class="login-button">Jelentkezés</a>
-        </div>
-
-        <div class="service-card" data-aos="fade-up" data-aos-delay="400">
-            <img src="./pictures_from_training_courses/training-1.jpg" alt="Tréningek">
-            <h3>Karriertervezés és Énmárka Építés</h3>
-            <p>Csoportos fejlődési lehetőségek inspiráló környezetben</p>
-            <a href="./kepzeseink.php#career" class="login-button">Részletek</a>
-            <a href="./idopont.php#5" class="login-button">Jelentkezés</a>
-        </div>
-
-        <div class="service-card" data-aos="fade-up" data-aos-delay="500">
-            <img src="./pictures_from_training_courses/effective communication and conflict management.jpg" alt="Kommunikáció">
-            <h3>Hatékony Kommunikáció és Konfliktuskezelés</h3>
-            <p>Sajátítsd el a konstruktív kommunikációs technikákat a jobb kapcsolatokért</p>
-            <a href="./kepzeseink.php#communication" class="login-button">Részletek</a>
-            <a href="./idopont.php#6" class="login-button">Jelentkezés</a>
-        </div>
-
-        <div class="service-card" data-aos="fade-up" data-aos-delay="600">
-            <img src="./pictures_from_training_courses/Mindfulness.jpg" alt="Mindfulness">
-            <h3>Mindfulness és Produktivitás Program</h3>
-            <p>Növeld koncentrációdat és hatékonyságodat tudatos jelenlét gyakorlásával</p>
-            <a href="./kepzeseink.php#mindfulness" class="login-button">Részletek</a>
-            <a href="./idopont.php#7" class="login-button">Jelentkezés</a>
-        </div>
+        <?php 
+        $delay = 100;
+        foreach ($services as $service): 
+            $imageUrl = "./pictures_from_training_courses/" . $service['name'];
+            $anchorId = strtolower(str_replace(' ', '-', $service['name']));
+        ?>
+            <div class="service-card" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
+                <img src="<?php echo htmlspecialchars($imageUrl); ?>.jpg" alt="<?php echo htmlspecialchars($service['name']); ?>">
+                <h3><?php echo htmlspecialchars($service['name']); ?></h3>
+                <p><?php echo htmlspecialchars($service['description']); ?></p>
+                <a href="./kepzeseink.php#<?php echo $service['id']; ?>" class="login-button">Részletek</a>
+                <a href="./idopont.php#<?php echo $service['id']; ?>" class="login-button">Jelentkezés</a>
+            </div>
+        <?php 
+            $delay += 100;
+        endforeach; 
+        ?>
     </section>
 
     <section class="testimonials">
@@ -158,10 +109,11 @@ function isLoggedIn($pdo)
     </section>
 
     <footer>
-        <p>&copy; 2024 Firestarter Akadémia - Minden jog fenntartva</p>
+        <p>&copy; 2024-2025 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
 
     <script>
+        document.body.setAttribute('data-theme', 'dark');
         AOS.init({
             duration: 1000,
             once: true

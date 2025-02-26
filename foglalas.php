@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['action'])) {
         try {
+            deleteOldBookings($pdo);
+            
             switch ($_POST['action']) {
                 case 'update_settings':
                     if (!isset(
@@ -118,13 +120,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 }
-
 if (isset($_SESSION['success'])) {
-    echo "<div class='alert alert-success'>" . $_SESSION['success'] . "</div>";
+    echo "<div class='alert alert-success' id='success-alert'>" . $_SESSION['success'] . "</div>";
+    echo "<script>
+        setTimeout(function() {
+            document.getElementById('success-alert').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('success-alert').remove();
+            }, 400);
+        }, 3600);
+    </script>";
     unset($_SESSION['success']);
 }
 if (isset($_SESSION['error'])) {
-    echo "<div class='alert alert-error'>" . $_SESSION['error'] . "</div>";
+    echo "<div class='alert alert-error' id='error-alert'>" . $_SESSION['error'] . "</div>";
+    echo "<script>
+        setTimeout(function() {
+            document.getElementById('error-alert').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('error-alert').remove();
+            }, 400);
+        }, 3600);
+    </script>";
     unset($_SESSION['error']);
 }
 

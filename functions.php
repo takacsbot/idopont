@@ -1,4 +1,8 @@
 <?php
+require 'vendor/autoload.php';
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 function isLoggedIn($pdo) {
     $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
     
@@ -23,16 +27,20 @@ function isInstructor($user = null) {
     return $user && isset($user['is_instructor']) && $user['is_instructor'] == 1;
 }
 
+function isAdmin($user = null) {
+    return $user && isset($user['is_admin']) && $user['is_admin'] == 1;
+}
+
 function getServices($pdo) {
     $stmt = $pdo->query("SELECT * FROM services ORDER BY name");
     return $stmt->fetchAll();
 }
 
-function addService($pdo, $name, $description, $recommended_time, $recommended_to, $duration, $price) {
+function addService($pdo, $name, $duration, $price) {
     try {
-        $stmt = $pdo->prepare("INSERT INTO services (name, description, recommended_time, recommended_to, duration, price) 
-                              VALUES (?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([$name, $description, $recommended_time, $recommended_to, $duration, $price]);
+        $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) 
+                              VALUES (?, ?, ?)");
+        return $stmt->execute([$name, $duration, $price]);
     } catch (PDOException $e) {
         error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
         return false;
@@ -45,19 +53,18 @@ function getService($pdo, $id) {
     return $stmt->fetch();
 }
 
-function editService($pdo, $id, $name, $description, $recommended_time, $recommended_to, $duration, $price) {
+function editService($pdo, $id, $name, $duration, $price) {
     $stmt = $pdo->prepare("UPDATE services 
-                          SET name = ?, description = ?, recommended_time = ?, 
-                              recommended_to = ?, duration = ?, price = ? 
+                          SET name = ?, duration = ?, price = ? 
                           WHERE id = ?");
-    return $stmt->execute([$name, $description, $recommended_time, $recommended_to, $duration, $price, $id]);
+    return $stmt->execute([$name, $duration, $price, $id]);
 }
 
 function deleteService($pdo, $id) {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE service_id = ?");
     $stmt->execute([$id]);
     if ($stmt->fetchColumn() > 0) {
-        throw new Exception('Cannot delete service with existing bookings');
+        throw new Exception('A szolgáltatás nem törölhető, mert már vannak foglalások hozzá');
     }
     $stmt = $pdo->prepare("DELETE FROM time_slots WHERE service_id = ?");
     $stmt->execute([$id]);
@@ -156,11 +163,7 @@ function updateBookingStatus($pdo, $bookingId, $status) {
 }
 
 function sendEmail($to, $subject, $message) {
-    $headers = 'From: noreply@example.com' . "\r\n" .
-               'Reply-To: noreply@example.com' . "\r\n" .
-               'X-Mailer: PHP/' . phpversion();
 
-    return mail($to, $subject, $message, $headers);
 }
 
 function updateSettings($pdo, $settings) {
@@ -174,7 +177,7 @@ function updateSettings($pdo, $settings) {
         }
         return true;
     } catch (Exception $e) {
-        throw new Exception('Failed to update settings: ' . $e->getMessage());
+        throw new Exception('A beállítások frissítése nem történt meg: ' . $e->getMessage());
     }
 }
 
@@ -244,5 +247,15 @@ function cancelBooking($pdo, $booking_id, $user_id) {
     } catch(Exception $e) {
         error_log("Hiba a foglalás lemondásakor: " . $e->getMessage());
         throw $e;
+    }
+}
+function deleteOldBookings($pdo) {
+    try {
+        $stmt = $pdo->prepare("DELETE FROM bookings WHERE date < DATE_SUB(NOW(), INTERVAL 1 WEEK)");
+        $stmt->execute();
+        return true;
+    } catch(Exception $e) {
+        error_log("Hiba a régi foglalások közbe: " . $e->getMessage());
+        return false;
     }
 } 
