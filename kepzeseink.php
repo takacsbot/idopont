@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+require_once 'db_config.php';
+
+require_once 'functions.php';
+
+$services = getServices($pdo);
+?>
+
 <!DOCTYPE html>
 <html lang="hu">
 
@@ -37,14 +47,11 @@
 
         <div class="training-section">
         <?php
-            require_once 'db_config.php';
-            
             try {
-                $stmt = $pdo->query("SELECT * FROM services ORDER BY id");
                 $delay = 0;
                 
-                while ($service = $stmt->fetch()) {
-                    echo '<div class="training-card" data-aos="fade-up" data-aos-delay="' . $delay . '" id="service-' . htmlspecialchars($service['id']) . '">';
+                foreach ($services as $service) {
+                    echo '<div class="training-card" data-aos="fade-up" data-aos-delay="' . $delay . '" id="' . htmlspecialchars($service['id']) . '">';
                     echo '<h2 class="training-title">' . htmlspecialchars($service['name']) . '</h2>';
                     echo '<p class="training-info">' . htmlspecialchars($service['description']) . '</p>';
                     echo '<p class="training-info"><strong>Ajánlott Időtartam:</strong> ' . htmlspecialchars($service['recommended_time']) . '</p>';
@@ -55,6 +62,7 @@
                     
                     $delay += 100;
                 }
+                
             } catch(PDOException $e) {
                 echo '<p class="error">Sajnáljuk, a szolgáltatások betöltése sikertelen.</p>';
             }
