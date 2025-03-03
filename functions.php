@@ -3,6 +3,18 @@ require 'vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Check if user is logged in and set session variables.
+//
+//Input: 
+//  $pdo - PDO object
+//
+//Output: 
+//  $user - user data
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function isLoggedIn($pdo) {
     $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
     
@@ -23,19 +35,70 @@ function isLoggedIn($pdo) {
     return false;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Check if user is an instructor.
+//
+//Input: 
+//  $user - user data
+//
+//Output: 
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function isInstructor($user = null) {
     return $user && isset($user['is_instructor']) && $user['is_instructor'] == 1;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Check if user is an admin.
+//
+//Input: 
+//  $user - user data
+//
+//Output: 
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function isAdmin($user = null) {
     return $user && isset($user['is_admin']) && $user['is_admin'] == 1;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Return services.
+//
+//Input: 
+//  $pdo - PDO object
+//
+//Output: 
+//  $services - services
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getServices($pdo) {
-    $stmt = $pdo->query("SELECT * FROM services ORDER BY name");
-    return $stmt->fetchAll();
+    $services = $pdo->query("SELECT * FROM services ORDER BY name");
+    return $services->fetchAll();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Add a new service to the database.
+//
+//Input: 
+//  $pdo - PDO object
+//  $name - service name
+//  $duration - service duration
+//  $price - service price
+//
+//Output: 
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addService($pdo, $name, $duration, $price) {
     try {
         $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) 
@@ -47,12 +110,41 @@ function addService($pdo, $name, $duration, $price) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Get service details by ID.
+//
+//Input: 
+//  $pdo - PDO object
+//  $id - service ID
+//
+//Output: 
+//  service data array or false if not found.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getService($pdo, $id) {
     $stmt = $pdo->prepare("SELECT * FROM services WHERE id = ?");
     $stmt->execute([$id]);
     return $stmt->fetch();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Update an existing service.
+//
+//Input: 
+//  $pdo - PDO object
+//  $id - service ID
+//  $name - service name
+//  $duration - service duration
+//  $price - service price
+//
+//Output: 
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function editService($pdo, $id, $name, $duration, $price) {
     $stmt = $pdo->prepare("UPDATE services 
                           SET name = ?, duration = ?, price = ? 
@@ -60,6 +152,20 @@ function editService($pdo, $id, $name, $duration, $price) {
     return $stmt->execute([$name, $duration, $price, $id]);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Delete a service if it has no bookings.
+//
+//Input: 
+//  $pdo - PDO object
+//  $id - service ID.
+//
+//Output: 
+//  boolean
+//  throws Exception if service has bookings
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function deleteService($pdo, $id) {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM bookings WHERE service_id = ?");
     $stmt->execute([$id]);
@@ -73,6 +179,19 @@ function deleteService($pdo, $id) {
     return $stmt->execute([$id]);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Get available time slots for a service on a specific date.
+//
+//Input: 
+//  $pdo - PDO object
+//  $service_id - service ID, $date - date string.
+//
+//Output: 
+//  array of available time slots.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getAvailableTimeSlots($pdo, $service_id, $date) {
     $stmt = $pdo->prepare("SELECT * FROM time_slots 
                           WHERE service_id = ? 
@@ -83,6 +202,22 @@ function getAvailableTimeSlots($pdo, $service_id, $date) {
     return $stmt->fetchAll();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Add a new time slot for a service.
+//
+//Input:
+//  $pdo - PDO object
+//  $service_id - service ID
+//  $date - date string
+//  $start_time - start time string
+//  $end_time - end time string
+//
+//Output:
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
     try {
         $formatted_date = date('Y-m-d', strtotime($date));
@@ -102,6 +237,18 @@ function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Get all bookings with client and service details.
+//
+//Input:
+//  $pdo - PDO object
+//
+//Output:
+//  array of booking data.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getBookings($pdo) {
     $stmt = $pdo->query("
         SELECT 
@@ -123,6 +270,21 @@ function getBookings($pdo) {
     return $stmt->fetchAll();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Create a new booking and mark time slot as unavailable.
+//
+//Input:
+//  $pdo - PDO object
+//  $user_id - user ID
+//  $service_id - service ID
+//  $time_slot_id - time slot ID
+//
+//Output:
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
     try {
         $pdo->beginTransaction();
@@ -157,15 +319,56 @@ function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Update a booking's status.
+//
+//Input: $pdo - PDO object
+//  $bookingId - booking ID
+//  $status - new status string
+//
+//Output:
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function updateBookingStatus($pdo, $bookingId, $status) {
     $stmt = $pdo->prepare("UPDATE bookings SET status = ? WHERE id = ?");
     return $stmt->execute([$status, $bookingId]);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Send an email.
+//
+//Input:
+//  $to - recipient email
+//  $subject - email subject
+//  $message - email body
+//
+//Output:
+//  ?
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function sendEmail($to, $subject, $message) {
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description
+//  Update application settings.
+//
+//Input:
+//  $pdo - PDO object
+//  $settings - array of settings.
+//
+//Output:
+//  boolean
+//  throws Exception on failure
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function updateSettings($pdo, $settings) {
     try {
         foreach ($settings as $key => $value) {
@@ -181,6 +384,18 @@ function updateSettings($pdo, $settings) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Get all application settings.
+//
+//Input:
+//  $pdo - PDO object
+//
+//Output:
+//  array of settings
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getSettings($pdo) {
     $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
     $rows = $stmt->fetchAll();
@@ -209,6 +424,19 @@ function getSettings($pdo) {
     return $settings;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Get bookings for a specific user.
+//
+//Input:
+//  $pdo - PDO object
+//  $user_id - user ID
+//
+//Output:
+//  array of user's booking data
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function getUserBookings($pdo, $user_id) {
     $stmt = $pdo->prepare("
         SELECT 
@@ -230,6 +458,21 @@ function getUserBookings($pdo, $user_id) {
     return $stmt->fetchAll();
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Cancel a booking for a user.
+//
+//Input:
+//  $pdo - PDO object
+//  $booking_id - booking ID
+//  $user_id - user ID
+//
+//Output:
+//  boolean
+//  throws Exception on failure
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function cancelBooking($pdo, $booking_id, $user_id) {
     try {
         $stmt = $pdo->prepare("SELECT * FROM bookings WHERE id = ? AND user_id = ?");
@@ -249,6 +492,19 @@ function cancelBooking($pdo, $booking_id, $user_id) {
         throw $e;
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Delete bookings older than one week.
+//
+//Input:
+//  $pdo - PDO object
+//
+//Output:
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
 function deleteOldBookings($pdo) {
     try {
         $stmt = $pdo->prepare("DELETE FROM bookings WHERE date < DATE_SUB(NOW(), INTERVAL 1 WEEK)");
