@@ -289,7 +289,6 @@ function createBooking($pdo, $user_id, $service_id, $time_slot_id) {
     try {
         $pdo->beginTransaction();
         
-
         $stmt = $pdo->prepare("SELECT date, start_time FROM time_slots WHERE id = ?");
         $stmt->execute([$time_slot_id]);
         $timeSlot = $stmt->fetch();
@@ -348,11 +347,33 @@ function updateBookingStatus($pdo, $bookingId, $status) {
 //  $message - email body
 //
 //Output:
-//  ?
+//  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 function sendEmail($to, $subject, $message) {
+    $mail = new PHPMailer(true);
+    try {
+        $mail->isSMTP();                                          
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;                             
+        $mail->Username   = 'firestarterakademia@gmail.com'; 
+        $mail->Password   = 'muvn svge ipdv ykqr';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
 
+        $mail->setFrom('firestarterakademia@gmail.com', mb_encode_mimeheader('Firestarter Akadémia', 'UTF-8'));
+        $mail->addAddress($to);
+
+        $mail->isHTML(true);
+        $mail->Subject = mb_encode_mimeheader($subject, 'UTF-8');
+        $mail->Body    = nl2br($message);
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Az emailt nem lehetett elküldeni: {$mail->ErrorInfo}");
+        return false;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,9 +393,6 @@ function sendEmail($to, $subject, $message) {
 function updateSettings($pdo, $settings) {
     try {
         foreach ($settings as $key => $value) {
-            if ($key === 'email_notifications' || $key === 'sms_notifications') {
-                $value = $value ? 'true' : 'false';
-            }
             $stmt = $pdo->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
             $stmt->execute([$value, $key]);
         }
@@ -410,9 +428,7 @@ function getSettings($pdo) {
             'min_advance_hours' => 24,
             'max_advance_days' => 60,
             'work_day_start' => '09:00',
-            'work_day_end' => '17:00',
-            'email_notifications' => 'true',
-            'sms_notifications' => 'false'
+            'work_day_end' => '17:00'
         ];
         
         foreach ($settings as $key => $value) {
@@ -514,4 +530,29 @@ function deleteOldBookings($pdo) {
         error_log("Hiba a régi foglalások közbe: " . $e->getMessage());
         return false;
     }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
+//  Send a booking email.
+//
+//Input:
+//  $to - recipient email
+//  $bookingId - booking ID
+//  $status - booking status
+//  $courseName - course name
+//  $courseTime - course time
+//
+//Output:
+//  boolean
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+function sendBookingEmail($to, $bookingId, $status, $courseName, $courseTime) {
+    $subject = $status === 'confirmed' ? 'Foglalás megerősítése' : 'Foglalás lemondása';
+    $message = $status === 'confirmed' 
+        ? "Kedves Felhasználó,<br><br>A foglalása megerősítve lett.<br>Kurzus neve: $courseName<br>Időpont: $courseTime<br><br>Köszönjük, hogy minket választott!<br><br>Üdvözlettel,<br>Firestarter Akadémia"
+        : "Kedves Felhasználó,<br><br>A foglalása lemondásra került.<br>Kurzus neve: $courseName<br>Időpont: $courseTime<br><br>Ha bármilyen kérdése van, kérjük, lépjen kapcsolatba velünk.<br><br>Üdvözlettel,<br>Firestarter Akadémia";
+
+    return sendEmail($to, $subject, $message);
 } 

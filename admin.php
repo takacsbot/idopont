@@ -151,12 +151,12 @@ function getUsersList($pdo)
                 foreach ($users as $user): 
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($user['id']); ?></td>
-                    <td><?php echo htmlspecialchars($user['username']); ?></td>
-                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                    <td><?php echo $user['is_admin'] ? 'Igen' : 'Nem'; ?></td>
-                    <td><?php echo $user['is_instructor'] ? 'Igen' : 'Nem'; ?></td>
-                    <td>
+                    <td data-label="ID"><?php echo htmlspecialchars($user['id']); ?></td>
+                    <td data-label="Felhasználónév"><?php echo htmlspecialchars($user['username']); ?></td>
+                    <td data-label="Email"><?php echo htmlspecialchars($user['email']); ?></td>
+                    <td data-label="Admin"><?php echo $user['is_admin'] ? 'Igen' : 'Nem'; ?></td>
+                    <td data-label="Oktató"><?php echo $user['is_instructor'] ? 'Igen' : 'Nem'; ?></td>
+                    <td data-label="Műveletek">
                         <div class="admin-actions">
                             <form method="post" onsubmit="return confirm('Biztosan törölni szeretné a felhasználót?');">
                                 <input type="hidden" name="admin_action" value="delete_user">

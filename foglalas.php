@@ -32,8 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'max_advance_days' => $_POST['max_advance_days'],
                         'work_day_start' => $_POST['work_day_start'],
                         'work_day_end' => $_POST['work_day_end'],
-                        'email_notifications' => isset($_POST['email_notifications']),
-                        'sms_notifications' => isset($_POST['sms_notifications'])
                     ];
                     $success = updateSettings($pdo, $settings);
                     echo json_encode(['success' => $success, 'message' => 'Settings updated successfully']);
@@ -60,6 +58,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Missing booking ID');
                     }
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'confirmed');
+                    
+                    if ($success) {
+                        $stmt = $pdo->prepare("SELECT u.email, s.name AS course_name, t.start_time, t.date FROM bookings b 
+                                                JOIN users u ON b.user_id = u.id 
+                                                JOIN services s ON b.service_id = s.id 
+                                                JOIN time_slots t ON b.time_slot_id = t.id 
+                                                WHERE b.id = ?");
+                        $stmt->execute([$_POST['bookingId']]);
+                        $bookingDetails = $stmt->fetch();
+
+                        if ($bookingDetails) {
+                            $courseName = $bookingDetails['course_name'];
+                            $courseTime = $bookingDetails['date'] . ' ' . $bookingDetails['start_time'];
+                            sendBookingEmail($bookingDetails['email'], $_POST['bookingId'], 'confirmed', $courseName, $courseTime);
+                        }
+                    }
+                    
                     echo json_encode(['success' => $success, 'message' => 'Booking confirmed successfully']);
                     break;
 
@@ -68,6 +83,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Missing booking ID');
                     }
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'cancelled');
+                    
+                    if ($success) {
+                        $stmt = $pdo->prepare("SELECT u.email, s.name AS course_name, t.start_time, t.date FROM bookings b 
+                                                JOIN users u ON b.user_id = u.id 
+                                                JOIN services s ON b.service_id = s.id 
+                                                JOIN time_slots t ON b.time_slot_id = t.id 
+                                                WHERE b.id = ?");
+                        $stmt->execute([$_POST['bookingId']]);
+                        $bookingDetails = $stmt->fetch();
+
+                        if ($bookingDetails) {
+                            $courseName = $bookingDetails['course_name'];
+                            $courseTime = $bookingDetails['date'] . ' ' . $bookingDetails['start_time'];
+                            sendBookingEmail($bookingDetails['email'], $_POST['bookingId'], 'cancelled', $courseName, $courseTime);
+                        }
+                    }
+                    
                     echo json_encode(['success' => $success, 'message' => 'Booking cancelled successfully']);
                     break;
 
@@ -308,21 +340,7 @@ if (isset($_SESSION['error'])) {
                             Napi befejezés:
                             <input type="time" name="work_day_end" value="<?= htmlspecialchars($settings['work_day_end']) ?>">
                         </label>
-                    </div>
-
-                    <div class="setting-group">
-                        <h3>Értesítések</h3>
-                        <label>
-                            <input type="checkbox" name="email_notifications"
-                                <?= $settings['email_notifications'] === 'true' ? 'checked' : '' ?>>
-                            Email értesítések küldése
-                        </label>
-                        <label>
-                            <input type="checkbox" name="sms_notifications"
-                                <?= $settings['sms_notifications'] === 'true' ? 'checked' : '' ?>>
-                            SMS értesítések küldése
-                        </label>
-                    </div>
+                    </div> kecske
 
                     <button type="submit">Beállítások mentése</button>
                 </form>

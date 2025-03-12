@@ -90,14 +90,15 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
 <body>
     <header>
         <div class="header-content">
-            <a href="./index.php" class="logo">Firestarter Akadémia</a>
-            <nav>
-                <a href="./index.php">Főoldal</a>
-                <a href="./kepzeseink.php">Képzések</a>
-                <a href="./logout.php" class="logout-button">Kijelentkezés</a>
+            <div class="logo-container">
+                <a href="./index.php" class="logo">Firestarter Akadémia</a>
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
                 </button>
+            </div>
+            <nav>
+                <a href="./kepzeseink.php" class="desktop-only">Képzések</a>
+                <a href="./logout.php" class="logout-button desktop-only">Kijelentkezés</a>
             </nav>
         </div>
     </header>

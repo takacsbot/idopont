@@ -5,7 +5,7 @@ require_once 'functions.php';
 
 $user = isLoggedIn($pdo);
 if (!$user) {
-    header("Location: bejelentkezes.php");
+    header("Location: login.php");
     exit();
 }
 

@@ -38,11 +38,10 @@ $services = getServices($pdo);
 
     <header>
         <div class="header-content">
-            <div class="logo">Firestarter Akadémia</div>
-
+        <div class="logo">Firestarter Akadémia</div>
             <nav>
-                <a href="./kepzeseink.php">Képzésekről</a>
-                <a href="./rolunk.html">Rólunk</a>
+                <a href="./kepzeseink.php" id="kepzesek">Képzésekről</a>
+                <a href="./rolunk.html" id="rolunk">Rólunk</a>
                 <?php if (!$user) {
                     echo '<a class="login-button" href="./login.php">Belépés/Regisztráció</a>';
                 } else {
@@ -55,13 +54,11 @@ $services = getServices($pdo);
                     echo '<a href="admin.php" class="login-button">Admin Panel</a>';
                 }
                 ?>
-
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
                 </button>
             </nav>
         </div>
-
     </header>
 
 
@@ -118,6 +115,59 @@ $services = getServices($pdo);
             duration: 1000,
             once: true
         });
+
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+        const scrollThreshold = 50;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll === 0) {
+                header.classList.remove('hidden');
+            }     else if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
+                header.classList.add('hidden');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                modeText.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+
+</html> });
 
         let lastScroll = 0;
         const header = document.querySelector('header');
