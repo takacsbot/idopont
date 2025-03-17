@@ -1,17 +1,7 @@
 <?php
 session_start();
-
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+require_once 'db_config.php';
+require_once 'functions.php';
 
 $message = '';
 
@@ -26,16 +16,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch();
 
         if ($user) {
-            $reset_token = bin2hex(random_bytes(32));
-            $expires = date('Y-m-d H:i:s', time() + 3600); 
+            $new_password = bin2hex(random_bytes(32));
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-
-            $stmt = $pdo->prepare("UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?");
-            $stmt->execute([$reset_token, $expires, $email]);
-
-            $message = "Ha létezik fiók ezzel az email címmel, hamarosan kap egy jelszó visszaállító linket.";
+            $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
+            $stmt->execute([$hashed_password, $email]);
+            sendEmail($email, 'Jelszó visszaállítása', "Az új jelszó: $new_password");
+            $message = "Ha létezik fiók ezzel az email címmel, hamarosan kap egy új jelszót.";
         } else {
-            $message = "Ha létezik fiók ezzel az email címmel, hamarosan kap egy jelszó visszaállító linket.";
+            $message = "Ezzel az e-mail címmel nem létezik fiók.";
         }
     }
 }
@@ -63,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container" data-aos="fade-up">
         <h2>Elfelejtett jelszó</h2>
-        <p class="instruction-text">Add meg az email címed, és küldünk egy jelszó visszaállító linket.</p>
+        <p class="instruction-text">Add meg az email címed, és küldünk egy jelszót.</p>
         <?php
         if (!empty($message)) {
             echo "<p class='message'>$message</p>";
@@ -78,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
         <div class="login-link">
-            <p>Vissza a <a href="bejelentkezes.php">bejelentkezéshez</a></p>
+            <p>Vissza a <a href="login.php">bejelentkezéshez</a></p>
         </div>
     </div>
 
