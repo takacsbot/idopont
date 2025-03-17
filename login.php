@@ -1,17 +1,6 @@
 <?php
 session_start();
-
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+require_once 'db_config.php';
 
 $message = '';
 
@@ -29,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-
+            
             $token = bin2hex(random_bytes(32));
             $expires = time() + 86400; 
             
@@ -165,7 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $client = new Google_Client();
                 $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
                 $client->setClientSecret('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');
-                $client->setRedirectUri('http://localhost:8000/auth/google/callback.php');
+                $client->setRedirectUri('http://localhost:8000/auth/google/callback');
                 $client->addScope('email');
                 $client->addScope('profile');
                 
