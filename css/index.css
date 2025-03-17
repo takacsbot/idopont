@@ -311,7 +311,9 @@
                 gap: 1rem;
                 padding: 1rem 2%;
             }
-
+            #kepzesek, #rolunk{
+                display:none ;
+            }
             nav {
                 flex-direction: column;
                 gap: 1rem;

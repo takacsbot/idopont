@@ -1,10 +1,8 @@
 <?php
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
+require_once 'db_config.php';
+require_once 'functions.php';
 require_once 'vendor/autoload.php';
+$message = '';
 
 function getGoogleClient()
 {
@@ -69,16 +67,6 @@ function handleGoogleCallback($code)
     exit();
 }
 
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-$message = '';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -102,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->execute([$username, $email, $hashed_password]);
                 sendEmail($email, 'Regisztráció', 'Sikeres regisztráció!');
                 $message = "Regisztráció sikeres!";
+                
             } catch (PDOException $e) {
                 $message = "Regisztráció sikertelen: " . $e->getMessage();
             }

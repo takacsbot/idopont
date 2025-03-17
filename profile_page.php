@@ -1,17 +1,7 @@
 <?php
 session_start();
-
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+require_once('db_config.php');
+require_once 'functions.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: bejelentkezes.php");
@@ -22,7 +12,6 @@ $stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-require_once 'functions.php';
 deleteOldBookings($pdo);
 $user_bookings = getUserBookings($pdo, $_SESSION['user_id']);
 
@@ -90,14 +79,15 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
 <body>
     <header>
         <div class="header-content">
-            <a href="./index.php" class="logo">Firestarter Akadémia</a>
-            <nav>
-                <a href="./index.php">Főoldal</a>
-                <a href="./kepzeseink.php">Képzések</a>
-                <a href="./logout.php" class="logout-button">Kijelentkezés</a>
+            <div class="logo-container">
+                <a href="./index.php" class="logo">Firestarter Akadémia</a>
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
                 </button>
+            </div>
+            <nav>
+                <a href="./kepzeseink.php" class="desktop-only">Képzések</a>
+                <a href="./logout.php" class="logout-button desktop-only">Kijelentkezés</a>
             </nav>
         </div>
     </header>

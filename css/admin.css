@@ -64,6 +64,14 @@ body {
     display: flex;
     gap: 0.8rem;
 }
+.logo-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.logo-link:hover .logo {
+    transform: scale(1.05);
+}
 
 .admin-actions button {
     background: var(--gradient);
@@ -116,22 +124,134 @@ body {
 }
 
 @media (max-width: 768px) {
+    header {
+        padding: 0.5rem 5%;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 0.5rem 0;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    nav {
+        width: 100%;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    nav a {
+        font-size: 0.9rem;
+    }
+    
+    .theme-switch {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
     .admin-panel {
-        margin: 6rem 1rem 2rem;
-        padding: 1.5rem;
+        margin: 14rem 1rem 2rem;
+        padding: 1rem;
+    }
+    
+    .user-table {
+        background: none;
+        width: 100%;
+    }
+    
+    .user-table tbody {
+        display: block;
+        width: 100%;
+    }
+    
+    .user-table tbody tr {
+        display: block;
+        background: var(--testimonial-bg);
+        margin-bottom: 1rem;
+        padding: 1rem 1rem 1.5rem 1rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px var(--card-shadow);
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .user-table thead {
+        display: none;
+    }
+    
+    .user-table td {
+        display: flex;
+        align-items: center;
+        border: none;
+        padding: 0.5rem 0;
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .user-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        flex: 0 0 140px;
+        padding-right: 1rem;
+        color: var(--primary);
+    }
+    
+    .user-table td > *:not(:first-child) {
+        flex: 1;
+    }
+    
+    .user-table td[data-label="Műveletek"] {
+        display: block;
+        padding-bottom: 0;
+        margin-top: 0.5rem;
+    }
+    
+    .user-table td[data-label="Műveletek"]::before {
+        display: block;
+        margin-bottom: 1rem;
+    }
+    
+    .admin-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+        margin: 0;
+    }
+    
+    .admin-actions button {
+        width: 100%;
+        margin: 0;
+        padding: 0.8rem;
+        font-size: 0.9rem;
+        border-radius: 50px;
+    }
+    
+    .search-input {
+        padding: 0.8rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-panel h1 {
+        font-size: 1.5rem;
     }
     
     .admin-actions {
         flex-direction: column;
     }
     
-    .user-table {
-        font-size: 0.9rem;
+    .admin-actions button {
+        width: 100%;
     }
     
-    .theme-switch {
-        padding: 8px 15px;
-        font-size: 14px;
+    .search-container {
+        margin-bottom: 1.5rem;
     }
 }
 
@@ -159,14 +279,6 @@ header {
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-.logo-link {
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.logo-link:hover .logo {
-    transform: scale(1.05);
 }
 
 nav {
@@ -255,6 +367,7 @@ nav a:hover {
     opacity: 0.7;
 }
 
+/* Elrejtjük a nem egyező sorokat */
 .user-table tr.hidden {
     display: none;
 }

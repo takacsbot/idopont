@@ -16,12 +16,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch();
 
         if ($user) {
-            $new_password = bin2hex(random_bytes(32));
+            $new_password = bin2hex(random_bytes(12));
             $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 
             $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
             $stmt->execute([$hashed_password, $email]);
-            sendEmail($email, 'Jelszó visszaállítása', "Az új jelszó: $new_password");
+            sendEmail($email, 'Jelszó visszaállítása', "Kedves Felhasználó!
+
+Az Ön fiókjához tartozó jelszó-visszaállítási kérelmet kaptunk.
+Az új jelszava: $new_password
+Fontos: Ezzel az jelszóval most már be tud jelentkezni a fiókjába. Bejelentkezés után kérjük, látogasson el a 'Profil adatok' menüpontba, ahol beállíthatja az Ön által választott új jelszót.
+Ha nem Ön kérte ezt a jelszó-visszaállítást, kérjük, vegye fel a kapcsolatot ügyfélszolgálatunkkal azonnal.
+
+Üdvözlettel,
+A Firestarter Akadémia Csapata");
             $message = "Ha létezik fiók ezzel az email címmel, hamarosan kap egy új jelszót.";
         } else {
             $message = "Ezzel az e-mail címmel nem létezik fiók.";

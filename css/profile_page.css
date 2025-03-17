@@ -157,6 +157,40 @@
     .user-info, .email-update, .password-change {
         padding: 1.5rem;
     }
+
+    .header-content {
+        padding: 1rem;
+    }
+
+    .logo-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 0.5rem;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .theme-switch {
+        background: transparent;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mode-text {
+        font-size: 1.2rem;
+    }
+
+    .desktop-only {
+        display: none;
+    }
 }
 
 .bookings-table {

@@ -1,50 +1,14 @@
 <?php
 session_start();
+require_once 'functions.php';
+require_once 'db_config.php';
 
-$host = 'localhost';
-$dbname = 'timetable_db';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
-
-function isLoggedIn($pdo)
-{
-    $token = $_COOKIE['auth_token'] ?? $_SESSION['auth_token'] ?? null;
-
-    if ($token) {
-        $stmt = $pdo->prepare("SELECT u.* FROM users u 
-                               JOIN auth_tokens a ON u.id = a.user_id 
-                               WHERE a.token = ? AND a.expires_at > NOW()");
-        $stmt->execute([$token]);
-        $user = $stmt->fetch();
-
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['auth_token'] = $token;
-            return $user;
-        }
-    }
-    return false;
-}
-
-function isAdmin($user)
-{
-
-    return $user && isset($user['is_admin']) && $user['is_admin'] == 1;
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
     $loggedInUser = isLoggedIn($pdo);
     
     if (!isAdmin($loggedInUser)) {
-        die("Unauthorized access");
+        exit('Nincs Admin jogosultság.');
     }
 
     switch ($_POST['admin_action']) {
@@ -151,12 +115,12 @@ function getUsersList($pdo)
                 foreach ($users as $user): 
                 ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($user['id']); ?></td>
-                    <td><?php echo htmlspecialchars($user['username']); ?></td>
-                    <td><?php echo htmlspecialchars($user['email']); ?></td>
-                    <td><?php echo $user['is_admin'] ? 'Igen' : 'Nem'; ?></td>
-                    <td><?php echo $user['is_instructor'] ? 'Igen' : 'Nem'; ?></td>
-                    <td>
+                    <td data-label="ID"><?php echo htmlspecialchars($user['id']); ?></td>
+                    <td data-label="Felhasználónév"><?php echo htmlspecialchars($user['username']); ?></td>
+                    <td data-label="Email"><?php echo htmlspecialchars($user['email']); ?></td>
+                    <td data-label="Admin"><?php echo $user['is_admin'] ? 'Igen' : 'Nem'; ?></td>
+                    <td data-label="Oktató"><?php echo $user['is_instructor'] ? 'Igen' : 'Nem'; ?></td>
+                    <td data-label="Műveletek">
                         <div class="admin-actions">
                             <form method="post" onsubmit="return confirm('Biztosan törölni szeretné a felhasználót?');">
                                 <input type="hidden" name="admin_action" value="delete_user">
