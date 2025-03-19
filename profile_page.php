@@ -86,8 +86,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
                 </button>
             </div>
             <nav>
-                <a href="./kepzeseink.php" class="desktop-only">Képzések</a>
-                <a href="./logout.php" class="logout-button desktop-only">Kijelentkezés</a>
+                <a href="./logout.php" class="logout-button" id="desktop-logout">Kijelentkezés</a>
             </nav>
         </div>
     </header>
@@ -207,7 +206,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
             </section>
         </div>
     </main>
-
+    <a href="./logout.php" class="logout-button" id="mobile-logout">Kijelentkezés</a>
     <footer>
         <p>&copy; 2024-2025 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>

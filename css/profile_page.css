@@ -9,6 +9,10 @@
     background: var(--hero-bg);
 }
 
+#mobile-logout {
+    display: none;
+}
+
 .profile-wrapper {
     width: 100%;
     max-width: 1200px;  
@@ -20,6 +24,10 @@
     gap: 1rem;
     margin-bottom: 2rem;
     justify-content: center;
+}
+
+#desktop-logout {
+    display: flex;
 }
 
 .nav-item {
@@ -130,17 +138,18 @@
 }
 
 .logout-button {
-    background: var(--primary);
+    background: var(--gradient);
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logout-button:hover {
-    background: var(--secondary);
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
 }
 
 @media (max-width: 1024px) {
@@ -188,8 +197,12 @@
         font-size: 1.2rem;
     }
 
-    .desktop-only {
+    #desktop-logout {
         display: none;
+    }
+    
+    #mobile-logout {
+        display: block;
     }
 }
 
