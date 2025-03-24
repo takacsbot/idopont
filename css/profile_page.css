@@ -11,6 +11,8 @@
 
 #mobile-logout {
     display: none;
+    margin: 0 auto;
+    width: fit-content;
 }
 
 .profile-wrapper {
@@ -71,6 +73,10 @@
     background: var(--testimonial-bg);
     padding: 2rem;  
     border-radius: 12px;
+}
+
+.header.hidden {
+    transform: translateY(-100%);
 }
 
 .user-info h2, .email-update h2, .password-change h2 {
@@ -203,6 +209,7 @@
     
     #mobile-logout {
         display: block;
+        margin: 1rem auto;
     }
 }
 

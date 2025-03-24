@@ -144,6 +144,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $start_time = filter_input(INPUT_POST, 'start_time', FILTER_SANITIZE_STRING);
         $end_time = filter_input(INPUT_POST, 'end_time', FILTER_SANITIZE_STRING);
 
+
+        $settings = getSettings($pdo);
+        $work_start = strtotime($settings['work_day_start']);
+        $work_end = strtotime($settings['work_day_end']);
+        $slot_start = strtotime($start_time);
+        $slot_end = strtotime($end_time);
+
+        if ($slot_start < $work_start || $slot_end > $work_end) {
+            $_SESSION['error'] = "Az időpont a munkaidőn kívül esik! (Munkaidő: {$settings['work_day_start']} - {$settings['work_day_end']})";
+            header('Location: #timeslots');
+            exit();
+        }
+
         if (addTimeSlot($pdo, $service_id, $date, $start_time, $end_time)) {
             $_SESSION['success'] = "Időpont sikeresen hozzáadva!";
         } else {
@@ -243,6 +256,7 @@ if (isset($_SESSION['error'])) {
 
             <section id="timeslots">
                 <h2>Időpontok kezelése</h2>
+                <?php $settings = getSettings($pdo); ?>
                 <form method="POST">
                     <select name="service_id" required>
                         <?php foreach (getServices($pdo) as $service): ?>
@@ -261,13 +275,20 @@ if (isset($_SESSION['error'])) {
                                oninput="formatDate(this)">
                         <span class="calendar-icon"></span>
                     </div>
-                    <input type="time" name="start_time" required step="900">
-                    <input type="time" name="end_time" required step="900">
+                    <input type="time" 
+                           name="start_time" 
+                           required 
+                           step="900" 
+                           min="<?= $settings['work_day_start'] ?>" 
+                           max="<?= $settings['work_day_end'] ?>">
+                    <input type="time" 
+                           name="end_time" 
+                           required 
+                           step="900"
+                           min="<?= $settings['work_day_start'] ?>" 
+                           max="<?= $settings['work_day_end'] ?>">
                     <button type="submit">Időpont hozzáadása</button>
                 </form>
-                <?php if (isset($_SESSION['error'])): ?>
-                    <div class="error-message"><?= $_SESSION['error'] ?></div>
-                <?php endif; ?>
             </section>
 
             <section id="bookings">
@@ -342,7 +363,7 @@ if (isset($_SESSION['error'])) {
                             Napi befejezés:
                             <input type="time" name="work_day_end" value="<?= htmlspecialchars($settings['work_day_end']) ?>">
                         </label>
-                    </div> kecske
+                    </div>
 
                     <button type="submit">Beállítások mentése</button>
                 </form>
