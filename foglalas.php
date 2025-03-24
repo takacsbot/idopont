@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_POST['work_day_start'],
                         $_POST['work_day_end']
                     )) {
-                        throw new Exception('Missing settings parameters');
+                        throw new Exception('Hiányzó paraméterek.');
                     }
                     $settings = [
                         'min_advance_hours' => $_POST['min_advance_hours'],
@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'work_day_end' => $_POST['work_day_end'],
                     ];
                     $success = updateSettings($pdo, $settings);
-                    echo json_encode(['success' => $success, 'message' => 'Settings updated successfully']);
+                    echo json_encode(['success' => $success, 'message' => 'Beállítások frissítve.']);
                     break;
 
                 case 'edit':
                     if (!isset($_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'])) {
-                        throw new Exception('Missing parameters');
+                        throw new Exception('Hiányzó paraméterek.');
                     }
                     $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price']);
-                    echo json_encode(['success' => $success, 'message' => 'Service updated successfully']);
+                    echo json_encode(['success' => $success, 'message' => 'Szolgáltatás frissítve.']);
                     break;
 
                 case 'delete':
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception('Missing ID');
                     }
                     $success = deleteService($pdo, $_POST['id']);
-                    echo json_encode(['success' => $success, 'message' => 'Service deleted successfully']);
+                    echo json_encode(['success' => $success, 'message' => 'Szolgáltatás törölve.']);
                     break;
 
                 case 'confirm':
@@ -75,12 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    echo json_encode(['success' => $success, 'message' => 'Booking confirmed successfully']);
+                    echo json_encode(['success' => $success, 'message' => 'Foglalás jóváhagyva.']);
                     break;
 
                 case 'cancel':
                     if (!isset($_POST['bookingId'])) {
-                        throw new Exception('Missing booking ID');
+                        throw new Exception('Hiányzó foglalás azonosító.');
                     }
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'cancelled');
                     
@@ -100,23 +100,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     
-                    echo json_encode(['success' => $success, 'message' => 'Booking cancelled successfully']);
+                    echo json_encode(['success' => $success, 'message' => 'Foglalás lemondva.']);
                     break;
 
                 case 'get':
                     if (!isset($_POST['id'])) {
-                        throw new Exception('Missing ID');
+                        throw new Exception('Hiányzó azonosító.');
                     }
                     $service = getService($pdo, $_POST['id']);
                     if ($service) {
                         echo json_encode(['success' => true, 'data' => $service]);
                     } else {
-                        throw new Exception('Service not found');
+                        throw new Exception('Szolgáltatás nem található.');
                     }
                     break;
 
                 default:
-                    throw new Exception('Invalid action');
+                    throw new Exception('Helytelen művelet.');
             }
         } catch (Exception $e) {
             http_response_code(400);
@@ -126,11 +126,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['name'], $_POST['duration'], $_POST['price'])) {
+        $image = $_FILES['image'];
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
 
-        if (addService($pdo, $name, $duration, $price)) {
+        if (addService($pdo, $name, $duration, $price, $image)) {
             $_SESSION['success'] = "Szolgáltatás sikeresen hozzáadva!";
         } else {
             $_SESSION['error'] = "Hiba történt a szolgáltatás hozzáadásakor.";
@@ -207,10 +208,11 @@ if (isset($_SESSION['error'])) {
         <div class="admin-content">
             <section id="services">
                 <h2>Szolgáltatások kezelése</h2>
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     <input type="text" name="name" placeholder="Szolgáltatás neve" required>
                     <input type="number" name="duration" placeholder="Időtartam (perc)" required>
                     <input type="number" name="price" placeholder="Ár" required>
+                    <input type="file" name="image" placeholder="Kép" accept=".jpg" required>
                     <button type="submit">Hozzáadás</button>
                 </form>
 
@@ -369,7 +371,7 @@ if (isset($_SESSION['error'])) {
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Hiba történt a kérés feldolgozása során');
+                        alert('Hiba történt a kérés feldolgozása során.');
                     });
             }
         }
@@ -415,7 +417,7 @@ if (isset($_SESSION['error'])) {
                         <div id="editServiceModal" class="modal">
                             <div class="modal-content">
                                 <h3>Szolgáltatás szerkesztése</h3>
-                                <form id="editServiceForm">
+                                    <form id="editServiceForm" enctype="multipart/form-data">
                                     <input type="hidden" name="id" value="${service.id}">
                                     <input type="text" name="name" value="${service.name}" placeholder="Szolgáltatás neve" required>
                                     <input type="number" name="duration" value="${service.duration}" placeholder="Időtartam (perc)" required>
@@ -521,14 +523,14 @@ if (isset($_SESSION['error'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Settings updated successfully');
+                        alert('Beállítások frissítve.');
                     } else {
                         alert('Error: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Failed to update settings');
+                    alert('Hiba történt a kérés feldolgozása során.');
                 });
         });
         function toggleTheme() {

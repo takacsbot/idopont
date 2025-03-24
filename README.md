@@ -19,21 +19,19 @@ A Firestarter Akadémia egy modern, reszponzív weboldal PHP backend-del és MyS
 - Gradient design elemek
 ### 👨‍💼 Adminisztráció
 - Felhasználók kezelése
-- Szolgáltatások menedzselése
+- Jogosultság és jelszó módosítása
+- Felhasználók törlése
+- Keresés felhasználó név vagy e-mail alapján
+### Oktatói Felület
 - Foglalások áttekintése
 - Rendszerbeállítások
+- Szolgáltatások kezelése
 ---
 ## Technikai Részletek
 ### Frontend
-- HTML5- CSS3 (egyedi változókkal)- JavaScript (vanilla)- AOS animációs könyvtár- Reszponzív design (mobile-first megközelítés)\
+- HTML5- CSS3 - JavaScript - AOS animációs könyvtár - Reszponzív design\
 ### Backend
 - PHP 7+- MySQL adatbázis- PDO adatbázis kapcsolat- Google OAuth integráció\
-### Biztonsági Funkciók
-> - Jelszó titkosítás
-> - CSRF védelem
-> - SQL injection védelem
-> - XSS védelem
-> - Biztonságos munkamenet kezelés
 ## Telepítés
 1. Klónozza le a repót
 2. Állítsa be az adatbázis kapcsolatot a \db_config.php\ fájlban

@@ -16,7 +16,7 @@ if (isset($_GET['action'])) {
         case 'get_dates':
             if (!isset($_GET['year'], $_GET['month'])) {
                 http_response_code(400);
-                exit(json_encode(['error' => 'Missing parameters']));
+                exit(json_encode(['error' => 'Hiányzó paraméterek.']));
             }
 
             $year = (int)$_GET['year'];
@@ -45,7 +45,7 @@ if (isset($_GET['action'])) {
         case 'get_timeslots':
             if (!isset($_GET['service_id'], $_GET['date'])) {
                 http_response_code(400);
-                exit(json_encode(['error' => 'Missing parameters']));
+                exit(json_encode(['error' => 'Hiányzó paraméterek.']));
             }
 
             $slots = getAvailableTimeSlots($pdo, $_GET['service_id'], $_GET['date']);
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => true]);
     } else {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Failed to create booking']);
+        echo json_encode(['success' => false, 'message' => 'Lefoglalás sikertelen.']);
     }
     exit();
 }
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Hiba történt a dátumok lekérdezése során.');
                     }
                     return response.json();
                 })
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     return dates.map(date => parseInt(date.day));
                 })
                 .catch(error => {
-                    console.error('Error fetching dates:', error);
+                    console.error('Hiba történt:', error);
                     return [];
                 });
         }

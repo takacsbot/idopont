@@ -99,9 +99,18 @@ function getServices($pdo) {
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addService($pdo, $name, $duration, $price) {
+function addService($pdo, $name, $duration, $price, $image) {
     try {
-        $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) 
+        $allowed_types = ['jpg'];
+        $file_extension = strtolower(pathinfo($image["name"], PATHINFO_EXTENSION));
+        if (!in_array($file_extension, $allowed_types)) {
+            throw new Exception('Engedélyezett fájl típusok: jpg');
+        }
+
+        if (!move_uploaded_file($image["tmp_name"], './pictures_from_training_courses/' . $name . '.' . $file_extension)) {
+            throw new Exception('Failed to move uploaded file');
+        }
+                $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) 
                               VALUES (?, ?, ?)");
         return $stmt->execute([$name, $duration, $price]);
     } catch (PDOException $e) {
