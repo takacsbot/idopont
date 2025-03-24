@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
             $stmt->execute([$hashed_password, $email]);
             sendEmail($email, 'Jelszó visszaállítása', "Kedves Felhasználó!
-
 Az Ön fiókjához tartozó jelszó-visszaállítási kérelmet kaptunk.
 Az új jelszava: $new_password
 Fontos: Ezzel az jelszóval most már be tud jelentkezni a fiókjába. Bejelentkezés után kérjük, látogasson el a 'Profil adatok' menüpontba, ahol beállíthatja az Ön által választott új jelszót.
@@ -39,6 +38,7 @@ A Firestarter Akadémia Csapata");
 ?>
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,8 +46,9 @@ A Firestarter Akadémia Csapata");
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-    <link rel="stylesheet" href="css/elfelejtett_jelszo.css"/>
+    <link rel="stylesheet" href="css/elfelejtett_jelszo.css" />
 </head>
+
 <body>
     <button class="theme-switch" onclick="toggleTheme()">
         <span class="mode-text">☀️</span>
@@ -89,7 +90,7 @@ A Firestarter Akadémia Csapata");
             const body = document.body;
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
-            
+
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
                 modeText.textContent = '☀️';
@@ -105,7 +106,7 @@ A Firestarter Akadémia Csapata");
             const savedTheme = localStorage.getItem('theme');
             const button = document.querySelector('.theme-switch');
             const modeText = button.querySelector('.mode-text');
-            
+
             if (savedTheme === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
                 modeText.textContent = '🌙';
@@ -113,4 +114,5 @@ A Firestarter Akadémia Csapata");
         });
     </script>
 </body>
+
 </html>

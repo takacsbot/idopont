@@ -81,7 +81,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
         <div class="header-content">
             <div class="logo-container">
                 <a href="./index.php" class="logo">Firestarter Akadémia</a>
-                <button class="theme-switch" onclick="toggleTheme()">
+                <button class="theme-switch" id="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>
                 </button>
             </div>
@@ -211,32 +211,62 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'profile';
         <p>&copy; 2024-2025 Firestarter Akadémia - Minden jog fenntartva</p>
     </footer>
     <script>
-function toggleTheme() {
-            const body = document.body;
-            const button = document.querySelector('.theme-switch');
-            const modeText = button.querySelector('.mode-text');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                modeText.textContent = '☀️';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
+let lastScroll = 0;
+const header = document.querySelector('header');
+const scrollThreshold = 50;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            const button = document.querySelector('.theme-switch');
-            const modeText = button.querySelector('.mode-text');
-            
-            if (savedTheme === 'dark') {
-                document.body.setAttribute('data-theme', 'dark');
-                modeText.textContent = '🌙';
-            }
-        });
+window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
+    
+    if (Math.abs(currentScroll - lastScroll) <= 2) return;
+    
+    if (currentScroll <= 0) {
+        header.classList.remove('hidden');
+        header.classList.remove('scrolled');
+    } else if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
+        header.classList.add('hidden');
+    } else {
+        header.classList.remove('hidden');
+    }
+    
+    if (currentScroll > 100) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+
+    lastScroll = currentScroll;
+});
+
+function toggleTheme() {
+    const body = document.body;
+    const button = document.querySelector('#theme-switch');
+    const modeText = button.querySelector('.mode-text');
+    
+    if (body.getAttribute('data-theme') === 'dark') {
+        body.removeAttribute('data-theme');
+        modeText.textContent = '☀️';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        modeText.textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const button = document.querySelector('#theme-switch');
+    
+    if (button) {
+        const modeText = button.querySelector('.mode-text');
+        
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            if (modeText) modeText.textContent = '🌙';
+        }
+    }
+});
 
 function confirmCancel(bookingId) {
     if (confirm('Biztosan le szeretnéd mondani ezt a foglalást?')) {
