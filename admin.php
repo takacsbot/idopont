@@ -44,12 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
     exit();
 }
 
-
-function getUsersList($pdo)
-{
-    $stmt = $pdo->query("SELECT id, username, email, is_admin, is_instructor FROM users ORDER BY id");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 ?>
 
 <!DOCTYPE html>
