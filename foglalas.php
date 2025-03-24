@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!isset($_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'])) {
                         throw new Exception('Hiányzó paraméterek.');
                     }
-                    $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price']);
+                    $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to']);
                     echo json_encode(['success' => $success, 'message' => 'Szolgáltatás frissítve.']);
                     break;
 
@@ -125,13 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['name'], $_POST['duration'], $_POST['price'])) {
+    if (isset($_POST['name'], $_POST['duration'], $_POST['price'], $_POST['image'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to'])) {
         $image = $_FILES['image'];
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
+        $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+        $recommended_time = filter_input(INPUT_POST, 'recommended_time', FILTER_SANITIZE_STRING);
+        $recommended_to = filter_input(INPUT_POST, 'recommended_to', FILTER_SANITIZE_STRING);
 
-        if (addService($pdo, $user, $name, $duration, $price, $image)) {
+        if (addService($pdo, $user, $name, $duration, $price, $image, $description, $recommended_time, $recommended_to)) {
             $_SESSION['success'] = "Szolgáltatás sikeresen hozzáadva!";
         } else {
             $_SESSION['error'] = "Hiba történt a szolgáltatás hozzáadásakor.";

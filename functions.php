@@ -126,7 +126,7 @@ function getServices($pdo, $instructor = null) {
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addService($pdo, $instructor, $name, $duration, $price, $image) {
+function addService($pdo, $instructor, $name, $duration, $price, $image, $description, $recommended_time, $recommended_to) {
     try {
         $allowed_types = ['jpg'];
         $file_extension = strtolower(pathinfo($image["name"], PATHINFO_EXTENSION));
@@ -137,9 +137,9 @@ function addService($pdo, $instructor, $name, $duration, $price, $image) {
         if (!move_uploaded_file($image["tmp_name"], './pictures_from_training_courses/' . $name . '.' . $file_extension)) {
             throw new Exception('Failed to move uploaded file');
         }
-                $stmt = $pdo->prepare("INSERT INTO services (name, instructor_id, duration, price) 
-                              VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$name, $instructor['id'], $duration, $price]);
+                $stmt = $pdo->prepare("INSERT INTO services (name, instructor_id, duration, price, description, recommended_time, recommended_to) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([$name, $instructor['id'], $duration, $price, $description, $recommended_time, $recommended_to]);
     } catch (PDOException $e) {
         error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
         return false;
@@ -176,16 +176,20 @@ function getService($pdo, $id) {
 //  $name - service name
 //  $duration - service duration
 //  $price - service price
+//  $image - service image
+//  $description - service description
+//  $recommended_time - recommended time
+//  $recommended_to - recommended to
 //
 //Output: 
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function editService($pdo, $id, $name, $duration, $price) {
+function editService($pdo, $id, $name, $duration, $price, $description, $recommended_time, $recommended_to) {
     $stmt = $pdo->prepare("UPDATE services 
-                          SET name = ?, duration = ?, price = ? 
+                          SET name = ?, duration = ?, price = ?, description = ?, recommended_time = ?, recommended_to = ?
                           WHERE id = ?");
-    return $stmt->execute([$name, $duration, $price, $id]);
+    return $stmt->execute([$name, $duration, $price, $description, $recommended_time, $recommended_to, $id]);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
