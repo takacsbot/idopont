@@ -131,60 +131,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
 
-        if (addService($pdo, $name, $duration, $price, $image)) {
+        if (addService($pdo, $user, $name, $duration, $price, $image)) {
             $_SESSION['success'] = "Szolgáltatás sikeresen hozzáadva!";
         } else {
             $_SESSION['error'] = "Hiba történt a szolgáltatás hozzáadásakor.";
         }
-        header('Location: #services');
+        header('Location: #alert');
         exit();
     } elseif (isset($_POST['service_id'], $_POST['date'], $_POST['start_time'], $_POST['end_time'])) {
         $service_id = filter_input(INPUT_POST, 'service_id', FILTER_SANITIZE_NUMBER_INT);
         $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
         $start_time = filter_input(INPUT_POST, 'start_time', FILTER_SANITIZE_STRING);
         $end_time = filter_input(INPUT_POST, 'end_time', FILTER_SANITIZE_STRING);
-
-
+    
         $settings = getSettings($pdo);
-        $work_start = strtotime($settings['work_day_start']);
-        $work_end = strtotime($settings['work_day_end']);
-        $slot_start = strtotime($start_time);
-        $slot_end = strtotime($end_time);
-
+        $work_start = strtotime("1970-01-01 " . $settings['work_day_start']);
+        $work_end = strtotime("1970-01-01 " . $settings['work_day_end']);
+        $slot_start = strtotime("1970-01-01 " . $start_time);
+        $slot_end = strtotime("1970-01-01 " . $end_time);
+    
         if ($slot_start < $work_start || $slot_end > $work_end) {
             $_SESSION['error'] = "Az időpont a munkaidőn kívül esik! (Munkaidő: {$settings['work_day_start']} - {$settings['work_day_end']})";
-            header('Location: #timeslots');
+            header('Location: #alert');
             exit();
         }
-
-        if (addTimeSlot($pdo, $service_id, $date, $start_time, $end_time)) {
-            $_SESSION['success'] = "Időpont sikeresen hozzáadva!";
-        } else {
-            $_SESSION['error'] = "Hiba történt az időpont hozzáadásakor.";
+    
+        try {
+            if (addTimeSlot($pdo, $service_id, $date, $start_time, $end_time)) {
+                $_SESSION['success'] = "Időpont sikeresen hozzáadva!";
+            }
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
         }
-        header('Location: #timeslots');
+        header('Location: #alert');
         exit();
     }
 }
 if (isset($_SESSION['success'])) {
-    echo "<div class='alert alert-success' id='success-alert'>" . $_SESSION['success'] . "</div>";
+    echo "<div class='alert alert-success' id='alert'>" . $_SESSION['success'] . "</div>";
     echo "<script>
         setTimeout(function() {
-            document.getElementById('success-alert').style.opacity = '0';
+            document.getElementById('alert').style.opacity = '0';
             setTimeout(function() {
-                document.getElementById('success-alert').remove();
+                document.getElementById('alert').remove();
             }, 400);
         }, 3600);
     </script>";
     unset($_SESSION['success']);
 }
 if (isset($_SESSION['error'])) {
-    echo "<div class='alert alert-error' id='error-alert'>" . $_SESSION['error'] . "</div>";
+    echo "<div class='alert alert-error' id='alert'>" . $_SESSION['error'] . "</div>";
     echo "<script>
         setTimeout(function() {
-            document.getElementById('error-alert').style.opacity = '0';
+            document.getElementById('alert').style.opacity = '0';
             setTimeout(function() {
-                document.getElementById('error-alert').remove();
+                document.getElementById('alert').remove();
             }, 400);
         }, 3600);
     </script>";
@@ -242,7 +243,7 @@ if (isset($_SESSION['error'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach (getServices($pdo) as $service): ?>
+                        <?php foreach (getServices($pdo, $user) as $service): ?>
                             <tr>
                                 <td><?= htmlspecialchars($service['name']) ?></td>
                                 <td><?= $service['duration'] ?> perc</td>
@@ -262,7 +263,7 @@ if (isset($_SESSION['error'])) {
                 <?php $settings = getSettings($pdo); ?>
                 <form method="POST">
                     <select name="service_id" required>
-                        <?php foreach (getServices($pdo) as $service): ?>
+                        <?php foreach (getServices($pdo, $user) as $service): ?>
                             <option value="<?= $service['id'] ?>"><?= htmlspecialchars($service['name']) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -308,7 +309,7 @@ if (isset($_SESSION['error'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach (getBookings($pdo) as $booking): ?>
+                        <?php foreach (getBookings($pdo, $user) as $booking): ?>
                             <tr>
                                 <td><?= htmlspecialchars($booking['formatted_date']) ?></td>
                                 <td><?= htmlspecialchars($booking['formatted_start_time']) ?> - 
