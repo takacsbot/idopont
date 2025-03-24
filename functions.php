@@ -74,14 +74,22 @@ function isAdmin($user = null) {
 //
 //Input: 
 //  $pdo - PDO object
+//  $instructor - instructor data
+
 //
 //Output: 
 //  $services - services
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function getServices($pdo) {
-    $services = $pdo->query("SELECT * FROM services ORDER BY name");
-    return $services->fetchAll();
+function getServices($pdo, $instructor = null) {
+    if ($instructor) {
+        $stmt = $pdo->prepare("SELECT * FROM services WHERE instructor_id = ? ORDER BY name");
+        $stmt->execute([$instructor['id']]);
+        return $stmt->fetchAll();
+    } else {
+        $services = $pdo->query("SELECT * FROM services ORDER BY name");
+        return $services->fetchAll();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +99,7 @@ function getServices($pdo) {
 //
 //Input: 
 //  $pdo - PDO object
+//  $instructor - instructor data
 //  $name - service name
 //  $duration - service duration
 //  $price - service price
@@ -99,7 +108,7 @@ function getServices($pdo) {
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addService($pdo, $name, $duration, $price, $image) {
+function addService($pdo, $instructor, $name, $duration, $price, $image) {
     try {
         $allowed_types = ['jpg'];
         $file_extension = strtolower(pathinfo($image["name"], PATHINFO_EXTENSION));
@@ -110,9 +119,9 @@ function addService($pdo, $name, $duration, $price, $image) {
         if (!move_uploaded_file($image["tmp_name"], './pictures_from_training_courses/' . $name . '.' . $file_extension)) {
             throw new Exception('Failed to move uploaded file');
         }
-                $stmt = $pdo->prepare("INSERT INTO services (name, duration, price) 
-                              VALUES (?, ?, ?)");
-        return $stmt->execute([$name, $duration, $price]);
+                $stmt = $pdo->prepare("INSERT INTO services (name, instructor_id, duration, price) 
+                              VALUES (?, ?, ?, ?)");
+        return $stmt->execute([$name, $instructor['id'], $duration, $price]);
     } catch (PDOException $e) {
         error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
         return false;
@@ -233,6 +242,21 @@ function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
         $formatted_start = date('H:i:s', strtotime($start_time));
         $formatted_end = date('H:i:s', strtotime($end_time));
         
+        $stmt = $pdo->prepare("SELECT duration FROM services WHERE id = ?");
+        $stmt->execute([$service_id]);
+        $service = $stmt->fetch();
+        
+        if (!$service) {
+            throw new Exception('A szolgáltatás nem található');
+        }
+        
+        $start_datetime = strtotime($formatted_start);
+        $end_datetime = strtotime($formatted_end);
+        $duration_minutes = ($end_datetime - $start_datetime) / 60;
+
+        if ($duration_minutes != $service['duration']) {
+            throw new Exception("Az időpont hossza nem egyezik meg a szolgáltatás időtartamával ({$service['duration']} perc)");
+        }
         if ($formatted_start >= $formatted_end) {
             throw new Exception('A kezdő időpont nem lehet későbbi vagy egyenlő a befejező időpontnál');
         }
@@ -242,7 +266,7 @@ function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
         return $stmt->execute([$service_id, $formatted_date, $formatted_start, $formatted_end]);
     } catch (Exception $e) {
         error_log("Hiba az időpont hozzáadásakor: " . $e->getMessage());
-        return false;
+        throw $e;
     }
 }
 
@@ -253,30 +277,33 @@ function addTimeSlot($pdo, $service_id, $date, $start_time, $end_time) {
 //
 //Input:
 //  $pdo - PDO object
+//  $instructor - instructor data
 //
 //Output:
 //  array of booking data.
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function getBookings($pdo) {
-    $stmt = $pdo->query("
-        SELECT 
-            b.*,
-            u.username as client_name,
-            s.name as service_name,
-            t.start_time,
-            t.end_time,
-            t.date,
-            DATE_FORMAT(t.date, '%Y-%m-%d') as formatted_date,
-            DATE_FORMAT(t.start_time, '%H:%i') as formatted_start_time,
-            DATE_FORMAT(t.end_time, '%H:%i') as formatted_end_time
-        FROM bookings b
-        JOIN users u ON b.user_id = u.id
-        JOIN services s ON b.service_id = s.id
-        JOIN time_slots t ON b.time_slot_id = t.id
-        ORDER BY t.date DESC, t.start_time ASC
-    ");
+function getBookings($pdo, $instructor = null) {
+    $stmt = $pdo->prepare("
+    SELECT 
+        b.*,
+        u.username as client_name,
+        s.name as service_name,
+        t.start_time,
+        t.end_time,
+        t.date,
+        DATE_FORMAT(t.date, '%Y-%m-%d') as formatted_date,
+        DATE_FORMAT(t.start_time, '%H:%i') as formatted_start_time,
+        DATE_FORMAT(t.end_time, '%H:%i') as formatted_end_time
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.service_id = s.id
+    JOIN time_slots t ON b.time_slot_id = t.id
+    WHERE s.instructor_id = ?
+    ORDER BY t.date DESC, t.start_time ASC");
+    $stmt->execute([$instructor['id']]);
     return $stmt->fetchAll();
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
