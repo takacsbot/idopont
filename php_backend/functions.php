@@ -690,4 +690,34 @@ function sendBookingEmail($to, $bookingId, $status, $courseName, $courseTime) {
         : "Kedves Felhasználó,<br><br>A foglalása lemondásra került.<br>Kurzus neve: $courseName<br>Időpont: $courseTime<br><br>Ha bármilyen kérdése van, kérjük, lépjen kapcsolatba velünk.<br><br>Üdvözlettel,<br>Firestarter Akadémia";
 
     return sendEmail($to, $subject, $message);
+}
+
+function getNewsArticles($pdo) {
+    // Fix hírek tömb, adatbázis nélkül
+    return [
+        [
+            'id' => 1,
+            'title' => 'Új coaching programok indulnak',
+            'excerpt' => 'Izgalmas új lehetőségek várnak a személyes fejlődés útján.',
+            'author' => 'Kovács János',
+            'published_date' => '2024-03-15',
+            'image' => 'default1.jpg'
+        ],
+        [
+            'id' => 2,
+            'title' => 'Önismereti workshop májusban',
+            'excerpt' => 'Fedezd fel önmagad egy intenzív hétvégi workshop keretében.',
+            'author' => 'Nagy Éva',
+            'published_date' => '2024-03-10',
+            'image' => 'default2.jpg'
+        ],
+        [
+            'id' => 3,
+            'title' => 'Sikertörténetek a Firestarter Akadémiáról',
+            'excerpt' => 'Hallgasd meg résztvevőink inspiráló történeteit.',
+            'author' => 'Kiss Péter',
+            'published_date' => '2024-03-05',
+            'image' => 'default3.jpg'
+        ]
+    ];
 } 

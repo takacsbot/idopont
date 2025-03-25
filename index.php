@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 
 $user = isLoggedIn($pdo);
 $services = getServices($pdo);
@@ -28,6 +28,7 @@ $services = getServices($pdo);
         <div class="header-content">
         <div class="logo">Firestarter Akadémia</div>
             <nav>
+                <a href="./news.html" id="hirek">Hírek</a>
                 <a href="./kepzeseink.php" id="kepzesek">Képzésekről</a>
                 <a href="./rolunk.html" id="rolunk">Rólunk</a>
                 <?php if (!$user) {

@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 
 $user = isLoggedIn($pdo);
 if (!$user) {
@@ -255,25 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return;
             }
             
-            fetch('idopont.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    service_id: service_id,
-                    time_slot_id: time_slot_id
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Időpont foglalása sikeres!");
-                    location.reload();
-                } else {
-                    alert("Hiba történt a foglalás során: " + data.message);
-                }
-            });
+            window.location.href = `payment_page.php?service_id=${service_id}&time_slot_id=${time_slot_id}`;
         }
 
         function toggleTheme() {

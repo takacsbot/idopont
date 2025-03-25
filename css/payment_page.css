@@ -1,0 +1,119 @@
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.col {
+    flex: 1;
+    padding: 0 10px;
+    min-width: 200px;
+}
+
+.card-details {
+    display: flex;
+    gap: 1rem;
+}
+
+.card-number {
+    flex: 3;
+}
+
+.card-expiry {
+    flex: 1;
+}
+
+.card-cvc {
+    flex: 1;
+}
+
+.summary {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.summary-total {
+    font-weight: 700;
+    border-top: 1px solid #ddd;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+[data-theme="dark"] .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+[data-theme="dark"] .summary {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.payment-methods {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.payment-method {
+    flex: 1;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-method.active {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+[data-theme="dark"] .payment-method {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .payment-method.active {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+    .card-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .col {
+        flex: 100%;
+        margin-bottom: 1rem;
+    }
+}

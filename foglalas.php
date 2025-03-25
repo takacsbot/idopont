@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 
 $user = isLoggedIn($pdo);
 if (!$user || !isInstructor($user)) {

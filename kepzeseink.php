@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 
 $services = getServices($pdo);
 ?>
@@ -27,6 +27,7 @@ $services = getServices($pdo);
                 <div class="logo">Firestarter Akadémia</div>
             </a>
             <nav>
+            <a href="./news.html" id="hirek">Hírek</a>
                 <a href="../">Kezdőlap</a>
                 <button class="theme-switch" onclick="toggleTheme()">
                     <span class="mode-text">☀️</span>

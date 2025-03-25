@@ -1,6 +1,6 @@
 <?php
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 require_once 'vendor/autoload.php';
 $message = '';
 
