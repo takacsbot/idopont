@@ -36,8 +36,7 @@ A Firestarter Akadémia egy modern, reszponzív weboldal PHP backend-del és MyS
 1. Klónozza le a repót
 2. Állítsa be az adatbázis kapcsolatot a \db_config.php\ fájlban
 3. Importálja az SQL sémát
-4. Konfigurálja a Google OAuth beállításokat
-5. Állítsa be a webszerver gyökérkönyvtárát
+4. Állítsa be a webszerver gyökérkönyvtárát
 ## Adatbázis Séma
 A rendszer a következő fő táblákat használja:
 - users
