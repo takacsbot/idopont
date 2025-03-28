@@ -36,8 +36,7 @@ A Firestarter Akadémia egy modern, reszponzív weboldal PHP backend-del és MyS
 1. Klónozza le a repót
 2. Állítsa be az adatbázis kapcsolatot a \db_config.php\ fájlban
 3. Importálja az SQL sémát
-4. Konfigurálja a Google OAuth beállításokat
-5. Állítsa be a webszerver gyökérkönyvtárát
+4. Állítsa be a webszerver gyökérkönyvtárát
 ## Adatbázis Séma
 A rendszer a következő fő táblákat használja:
 - users
@@ -51,11 +50,13 @@ A projekthez való hozzájárulást szívesen fogadjuk. Kérjük, kövesse a kö
 2. Hozzon létre egy új branch-et
 3. Commitolja a változtatásokat
 4. Nyisson egy Pull Request-et
-
+## Teszt felhasználók
+- peter@firestarter.hu || kovacspeter || oktató
+- anna@firestarter.hu || nagyanna || oktató
+- janos@firestarter.hu || kissjanos || oktató
+- a@a.com || a || admin
 ### 👨‍💼 Fejlesztők
 > - Balogh Richárd
 > - Takács Botond
 ## Licensz
-*MIT License
----
-*Ez a dokumentáció folyamatosan frissül.
+MIT License

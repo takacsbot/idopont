@@ -23,7 +23,6 @@ $services = getServices($pdo);
 </head>
 
 <body>
-
     <header>
         <div class="header-content">
         <div class="logo">Firestarter Akadémia</div>
@@ -31,7 +30,8 @@ $services = getServices($pdo);
                 <a href="./news.html" id="hirek">Hírek</a>
                 <a href="./kepzeseink.php" id="kepzesek">Képzésekről</a>
                 <a href="./rolunk.html" id="rolunk">Rólunk</a>
-                <?php if (!$user) {
+                <?php
+                if (!$user) {
                     echo '<a class="login-button" href="./login.php">Belépés/Regisztráció</a>';
                 } else {
                     echo '<a href="./profile_page.php">' . htmlspecialchars($user['username']) . '</a>';
@@ -66,7 +66,6 @@ $services = getServices($pdo);
         $delay = 100;
         foreach ($services as $service): 
             $imageUrl = "./pictures_from_training_courses/" . $service['name'];
-            $anchorId = strtolower(str_replace(' ', '-', $service['name']));
         ?>
             <div class="service-card" data-aos="fade-up" data-aos-delay="<?php echo $delay; ?>">
                 <img src="<?php echo htmlspecialchars($imageUrl); ?>.jpg" alt="<?php echo htmlspecialchars($service['name']); ?>">
