@@ -51,11 +51,13 @@ A projekthez való hozzájárulást szívesen fogadjuk. Kérjük, kövesse a kö
 2. Hozzon létre egy új branch-et
 3. Commitolja a változtatásokat
 4. Nyisson egy Pull Request-et
-
+## Teszt felhasználók
+- peter@firestarter.hu || kovacspeter || oktató
+- anna@firestarter.hu || nagyanna || oktató
+- janos@firestarter.hu || kissjanos || oktató
+- a@a.com || a || admin
 ### 👨‍💼 Fejlesztők
 > - Balogh Richárd
 > - Takács Botond
 ## Licensz
-*MIT License
----
-*Ez a dokumentáció folyamatosan frissül.
+MIT License
