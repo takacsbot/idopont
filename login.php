@@ -1,39 +1,23 @@
 <?php
 session_start();
 require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
+
 
 $message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (empty($email) || empty($password)) {
         $message = "A mezők kitöltése kötelező.";
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        $user = getUserByEmail($pdo, $email);
 
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            
-            $token = bin2hex(random_bytes(32));
-            $expires = time() + 86400; 
-            
-            $stmt = $pdo->prepare("INSERT INTO auth_tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
-            $stmt->execute([$user['id'], $token, date('Y-m-d H:i:s', $expires)]);
-            
-            setcookie('auth_token', $token, [
-                'expires' => $expires,
-                'path' => '/',
-                'httponly' => true,
-                'secure' => true, 
-                'samesite' => 'Lax' 
-            ]);
-            
-            $_SESSION['auth_token'] = $token;
+            $tokenData = createAuthToken($pdo, $user['id']);
+            setAuthSessionAndCookie($user, $tokenData);
             
             header("Location: index.php");
             exit();
@@ -42,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-?>
+?> 
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -154,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $client = new Google_Client();
                 $client->setClientId('524001933732-mm6de3bm2bqmg57rjg5ar12t2dpaiths.apps.googleusercontent.com');
                 $client->setClientSecret('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');
-                $client->setRedirectUri('http://localhost:8000/auth/google/callback');
+                $client->setRedirectUri('http://localhost:8000/auth/google/callback.php');
                 $client->addScope('email');
                 $client->addScope('profile');
                 

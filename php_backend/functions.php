@@ -721,3 +721,32 @@ function getNewsArticles($pdo) {
         ]
     ];
 } 
+function getUserByEmail($pdo, $email) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    return $stmt->fetch();
+}
+
+function createAuthToken($pdo, $userId) {
+    $token = bin2hex(random_bytes(32));
+    $expires = time() + 86400;
+
+    $stmt = $pdo->prepare("INSERT INTO auth_tokens (user_id, token, expires_at) VALUES (?, ?, ?)");
+    $stmt->execute([$userId, $token, date('Y-m-d H:i:s', $expires)]);
+
+    return ['token' => $token, 'expires' => $expires];
+}
+
+function setAuthSessionAndCookie($user, $tokenData) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['auth_token'] = $tokenData['token'];
+
+    setcookie('auth_token', $tokenData['token'], [
+        'expires' => $tokenData['expires'],
+        'path' => '/',
+        'httponly' => true,
+        'secure' => true,
+        'samesite' => 'Lax'
+    ]);
+}
