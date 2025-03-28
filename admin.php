@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once 'functions.php';
-require_once 'db_config.php';
+require_once './php_backend/functions.php';
+require_once './php_backend/db_config.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
@@ -44,12 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_action'])) {
     exit();
 }
 
-
-function getUsersList($pdo)
-{
-    $stmt = $pdo->query("SELECT id, username, email, is_admin, is_instructor FROM users ORDER BY id");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
 ?>
 
 <!DOCTYPE html>

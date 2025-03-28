@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-require_once 'db_config.php';
-require_once 'functions.php';
+require_once './php_backend/db_config.php';
+require_once './php_backend/functions.php';
 
 $user = isLoggedIn($pdo);
 if (!$user || !isInstructor($user)) {
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!isset($_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'])) {
                         throw new Exception('Hiányzó paraméterek.');
                     }
-                    $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price']);
+                    $success = editService($pdo, $_POST['id'], $_POST['name'], $_POST['duration'], $_POST['price'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to']);
                     echo json_encode(['success' => $success, 'message' => 'Szolgáltatás frissítve.']);
                     break;
 
@@ -125,13 +125,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['name'], $_POST['duration'], $_POST['price'])) {
+    if (isset($_POST['name'], $_POST['duration'], $_POST['price'], $_POST['image'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to'])) {
         $image = $_FILES['image'];
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
         $price = filter_input(INPUT_POST, 'price', FILTER_SANITIZE_NUMBER_INT);
+        $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+        $recommended_time = filter_input(INPUT_POST, 'recommended_time', FILTER_SANITIZE_STRING);
+        $recommended_to = filter_input(INPUT_POST, 'recommended_to', FILTER_SANITIZE_STRING);
 
-        if (addService($pdo, $user, $name, $duration, $price, $image)) {
+        if (addService($pdo, $user, $name, $duration, $price, $image, $description, $recommended_time, $recommended_to)) {
             $_SESSION['success'] = "Szolgáltatás sikeresen hozzáadva!";
         } else {
             $_SESSION['error'] = "Hiba történt a szolgáltatás hozzáadásakor.";
@@ -224,6 +227,9 @@ if (isset($_SESSION['error'])) {
                 <h2>Szolgáltatások kezelése</h2>
                 <form method="POST" enctype="multipart/form-data">
                     <input type="text" name="name" placeholder="Szolgáltatás neve" required>
+                    <input type="text" name="description" placeholder="Szolgáltatás leírása" required>
+                    <input type="text" name="recommended_time" placeholder="Ajánlott időtartam" required>
+                    <input type="text" name="recommended_to" placeholder="Kiknek ajánlott" required>
                     <input type="number" name="duration" placeholder="Időtartam (perc)" required>
                     <input type="number" name="price" placeholder="Ár" required>
                     <input type="file" name="image" placeholder="Kép" accept=".jpg" required>
@@ -442,6 +448,9 @@ if (isset($_SESSION['error'])) {
                                     <form id="editServiceForm" enctype="multipart/form-data">
                                     <input type="hidden" name="id" value="${service.id}">
                                     <input type="text" name="name" value="${service.name}" placeholder="Szolgáltatás neve" required>
+                                    <input type="text" name="description" value="${service.description}" placeholder="Leírás" required>
+                                    <input type="text" name="recommended_time" value="${service.recommended_time}" placeholder="Ajánlott időtartam" required>
+                                    <input type="text" name="recommended_to" value="${service.recommended_to}" placeholder="Ajánlott kiknek" required>
                                     <input type="number" name="duration" value="${service.duration}" placeholder="Időtartam (perc)" required>
                                     <input type="number" name="price" value="${service.price}" placeholder="Ár" required>
                                     <div class="button-group">

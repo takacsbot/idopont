@@ -38,6 +38,24 @@ function isLoggedIn($pdo) {
 //////////////////////////////////////////////////////////////////////////////////////////////
 //
 //Description:
+//  Gets a list of users.
+//
+//Input:
+//  $pdo - PDO object
+//
+//Output:
+//  array of user data
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+function getUsersList($pdo)
+{
+    $stmt = $pdo->query("SELECT id, username, email, is_admin, is_instructor FROM users ORDER BY id");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//
+//Description:
 //  Check if user is an instructor.
 //
 //Input: 
@@ -108,7 +126,7 @@ function getServices($pdo, $instructor = null) {
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function addService($pdo, $instructor, $name, $duration, $price, $image) {
+function addService($pdo, $instructor, $name, $duration, $price, $image, $description, $recommended_time, $recommended_to) {
     try {
         $allowed_types = ['jpg'];
         $file_extension = strtolower(pathinfo($image["name"], PATHINFO_EXTENSION));
@@ -119,9 +137,9 @@ function addService($pdo, $instructor, $name, $duration, $price, $image) {
         if (!move_uploaded_file($image["tmp_name"], './pictures_from_training_courses/' . $name . '.' . $file_extension)) {
             throw new Exception('Failed to move uploaded file');
         }
-                $stmt = $pdo->prepare("INSERT INTO services (name, instructor_id, duration, price) 
-                              VALUES (?, ?, ?, ?)");
-        return $stmt->execute([$name, $instructor['id'], $duration, $price]);
+                $stmt = $pdo->prepare("INSERT INTO services (name, instructor_id, duration, price, description, recommended_time, recommended_to) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?)");
+        return $stmt->execute([$name, $instructor['id'], $duration, $price, $description, $recommended_time, $recommended_to]);
     } catch (PDOException $e) {
         error_log("Hiba a szolgáltatás hozzáadásakor: " . $e->getMessage());
         return false;
@@ -158,16 +176,20 @@ function getService($pdo, $id) {
 //  $name - service name
 //  $duration - service duration
 //  $price - service price
+//  $image - service image
+//  $description - service description
+//  $recommended_time - recommended time
+//  $recommended_to - recommended to
 //
 //Output: 
 //  boolean
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
-function editService($pdo, $id, $name, $duration, $price) {
+function editService($pdo, $id, $name, $duration, $price, $description, $recommended_time, $recommended_to) {
     $stmt = $pdo->prepare("UPDATE services 
-                          SET name = ?, duration = ?, price = ? 
+                          SET name = ?, duration = ?, price = ?, description = ?, recommended_time = ?, recommended_to = ?
                           WHERE id = ?");
-    return $stmt->execute([$name, $duration, $price, $id]);
+    return $stmt->execute([$name, $duration, $price, $description, $recommended_time, $recommended_to, $id]);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -668,4 +690,34 @@ function sendBookingEmail($to, $bookingId, $status, $courseName, $courseTime) {
         : "Kedves Felhasználó,<br><br>A foglalása lemondásra került.<br>Kurzus neve: $courseName<br>Időpont: $courseTime<br><br>Ha bármilyen kérdése van, kérjük, lépjen kapcsolatba velünk.<br><br>Üdvözlettel,<br>Firestarter Akadémia";
 
     return sendEmail($to, $subject, $message);
+}
+
+function getNewsArticles($pdo) {
+    // Fix hírek tömb, adatbázis nélkül
+    return [
+        [
+            'id' => 1,
+            'title' => 'Új coaching programok indulnak',
+            'excerpt' => 'Izgalmas új lehetőségek várnak a személyes fejlődés útján.',
+            'author' => 'Kovács János',
+            'published_date' => '2024-03-15',
+            'image' => 'default1.jpg'
+        ],
+        [
+            'id' => 2,
+            'title' => 'Önismereti workshop májusban',
+            'excerpt' => 'Fedezd fel önmagad egy intenzív hétvégi workshop keretében.',
+            'author' => 'Nagy Éva',
+            'published_date' => '2024-03-10',
+            'image' => 'default2.jpg'
+        ],
+        [
+            'id' => 3,
+            'title' => 'Sikertörténetek a Firestarter Akadémiáról',
+            'excerpt' => 'Hallgasd meg résztvevőink inspiráló történeteit.',
+            'author' => 'Kiss Péter',
+            'published_date' => '2024-03-05',
+            'image' => 'default3.jpg'
+        ]
+    ];
 } 

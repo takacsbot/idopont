@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'functions.php';
+require_once './php_backend/functions.php';
 
 header('Content-Type: application/json');
 

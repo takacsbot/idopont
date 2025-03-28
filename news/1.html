@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Önismeret és Karrierfejlesztés Workshop - Firestarter Akadémia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+    <link rel="stylesheet" href="../css/rolunk.css" />
+    <link rel="stylesheet" href="../hírek_oldalak_CSS/1.css" />
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.php" class="logo-link">
+                <div class="logo">Firestarter Akadémia</div>
+            </a>
+            <nav>
+                <button class="theme-switch" onclick="toggleTheme()">
+                    <span class="mode-text">☀️</span>
+                </button>
+
+                <a href="../">Kezdőlap</a>
+                <a href="rolunk.html">Rólunk</a>
+                <a href="hirek.html">Hírek</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="content-container workshop-details">
+        <div class="workshop-header" data-aos="fade-up">
+            <img src="../pictures_from_training_courses/Karriertervezés és Énmárka Építés.jpg" alt="Önismeret és Karrierfejlesztés Workshop">
+            <div class="workshop-title">
+                <h1>Önismeret és Karrierfejlesztés Workshop Sorozat</h1>
+                <p class="workshop-date">2024. december 15 - Induló program</p>
+            </div>
+        </div>
+
+        <div class="workshop-content">
+            <div class="workshop-description" data-aos="fade-up" data-aos-delay="100">
+                <h2>A Workshop Célja</h2>
+                <p>A Firestarter Akadémia átfogó workshop sorozata azoknak készült, akik mélyebb önismeretre vágynak és tudatosan szeretnék irányítani karrierjük alakulását. Képzett coaching szakembereink segítenek felfedezni rejtett képességeidet, és stratégiát dolgozunk ki céljaid eléréséhez.</p>
+            </div>
+
+            <div class="workshop-highlights" data-aos="fade-up" data-aos-delay="200">
+                <h2>Mit Kapsz a Workshoptól?</h2>
+                <ul>
+                    <li>Átfogó személyiségelemzés</li>
+                    <li>Egyéni erősségek és fejlesztendő területek feltárása</li>
+                    <li>Karriércélok definiálása és stratégiaalkotás</li>
+                    <li>Hatékony kommunikációs és önérvényesítési technikák</li>
+                    <li>Motivációs és önfejlesztési eszköztár</li>
+                </ul>
+            </div>
+
+            <div class="workshop-pricing" data-aos="fade-up" data-aos-delay="300">
+                <h2>Részvételi Információk</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Alapcsomag</h3>
+                        <p class="price">29.900 Ft</p>
+                        <ul>
+                            <li>1 napos workshop</li>
+                            <li>Csoportos foglalkozások</li>
+                            <li>Oktatási anyagok</li>
+                        </ul>
+
+                    </div>
+                    <div class="pricing-card premium">
+                        <h3>Prémium Csomag</h3>
+                        <p class="price">49.900 Ft</p>
+                        <ul>
+                            <li>2 napos workshop</li>
+                            <li>Egyéni coaching konzultáció</li>
+                            <li>Utánkövető online support</li>
+                            <li>Részletes egyéni elemzés</li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="workshop-schedule" data-aos="fade-up" data-aos-delay="400">
+                <h2>Ütemezés</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Időpont</th>
+                            <th>Program</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>09:00 - 10:00</td>
+                            <td>Regisztráció és bevezető</td>
+                        </tr>
+                        <tr>
+                            <td>10:00 - 12:00</td>
+                            <td>Önismereti blokk - Személyiségelemzés</td>
+                        </tr>
+                        <tr>
+                            <td>12:00 - 13:00</td>
+                            <td>Ebédszünet</td>
+                        </tr>
+                        <tr>
+                            <td>13:00 - 15:00</td>
+                            <td>Karriértervezési workshop</td>
+                        </tr>
+                        <tr>
+                            <td>15:00 - 16:00</td>
+                            <td>Záró konzultáció és Q&A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="workshop-registration" data-aos="fade-up" data-aos-delay="500">
+                <h2>Jelentkezés</h2>
+                <p>Korlátozott számú hely áll rendelkezésre! A jelentkezéseket érkezési sorrendben fogadjuk. Nem csak egyéni, hanem céges jelentkezéseket is várunk.</p>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024-2025 Firestarter Akadémia - Minden jog fenntartva</p>
+    </footer>
+
+    <script>
+
+        document.body.setAttribute('data-theme', 'dark');
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+        const scrollThreshold = 50;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll === 0) {
+                header.classList.remove('hidden');
+            } else if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
+                header.classList.add('hidden');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                document.documentElement.removeAttribute('data-theme');  
+                modeText.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-theme', 'dark');  
+                modeText.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const button = document.querySelector('.theme-switch');
+            const modeText = button.querySelector('.mode-text');
+
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                modeText.textContent = '🌙';
+            }
+
+        });
+    </script>
+</body>
+
+</html>
