@@ -226,7 +226,8 @@ function deleteService($pdo, $id) {
 //
 //Input: 
 //  $pdo - PDO object
-//  $service_id - service ID, $date - date string.
+//  $service_id - service ID
+// $date - date string.
 //
 //Output: 
 //  array of available time slots.
