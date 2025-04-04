@@ -37,7 +37,7 @@ $services = getServices($pdo);
                     echo '<a href="./profile_page.php">' . htmlspecialchars($user['username']) . '</a>';
                 } 
                 if (isInstructor($user)) {
-                    echo '<a href="foglalas.php" class="login-button">Időpontok kezelése</a>';
+                    echo '<a href="foglalas.php" class="login-button">Okatói kezelőfelület</a>';
                 }
                 if (isAdmin($user)) {
                     echo '<a href="admin.php" class="login-button">Admin Panel</a>';
@@ -154,5 +154,4 @@ $services = getServices($pdo);
         });
     </script>
 </body>
-
 </html>

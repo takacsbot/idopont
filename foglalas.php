@@ -202,7 +202,7 @@ if (isset($_SESSION['error'])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel - Időpontfoglalás</title>
+    <title>Oktatói kezelőfelület - Időpontfoglalás</title>
     <link rel="stylesheet" href="foglalas.css">
 </head>
 
