@@ -11,10 +11,10 @@ if (!$user || !isInstructor($user)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json; charset=utf-8');
-
     if (isset($_POST['action'])) {
         try {
+            header('Content-Type: application/json; charset=utf-8');
+
             deleteOldBookings($pdo);
             
             switch ($_POST['action']) {
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['name'], $_POST['duration'], $_POST['price'], $_POST['image'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to'])) {
+    if (isset($_POST['name'], $_POST['duration'], $_POST['price'], $_FILES['image'], $_POST['description'], $_POST['recommended_time'], $_POST['recommended_to'])) {
         $image = $_FILES['image'];
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $duration = filter_input(INPUT_POST, 'duration', FILTER_SANITIZE_NUMBER_INT);
