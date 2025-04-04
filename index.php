@@ -103,29 +103,7 @@ $services = getServices($pdo);
             duration: 1000,
             once: true
         });
-
-        let lastScroll = 0;
-        const header = document.querySelector('header');
-        const scrollThreshold = 50;
-
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            if (currentScroll === 0) {
-                header.classList.remove('hidden');
-            }     else if (currentScroll > lastScroll && currentScroll > scrollThreshold) {
-                header.classList.add('hidden');
-            }
-
-            lastScroll = currentScroll;
-        });
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+        
         function toggleTheme() {
             const body = document.body;
             const button = document.querySelector('.theme-switch');

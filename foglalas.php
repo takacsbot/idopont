@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 case 'delete':
                     if (!isset($_POST['id'])) {
-                        throw new Exception('Missing ID');
+                        throw new Exception('Hiányzó azonosító.');
                     }
                     $success = deleteService($pdo, $_POST['id']);
                     echo json_encode(['success' => $success, 'message' => 'Szolgáltatás törölve.']);
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 case 'confirm':
                     if (!isset($_POST['bookingId'])) {
-                        throw new Exception('Missing booking ID');
+                        throw new Exception('Hiányzó foglalás azonosító.');
                     }
                     $success = updateBookingStatus($pdo, $_POST['bookingId'], 'confirmed');
                     
