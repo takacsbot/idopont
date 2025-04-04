@@ -1,0 +1,1 @@
+{"version":1,"defects":[],"times":{"ExampleTest::testAddition":0.004,"LoginTest::testGetUserByEmail":0.06,"LoginTest::testCreateAuthToken":0.003,"LoginTest::testSetAuthSessionAndCookie":0.001}}
