@@ -1,7 +1,7 @@
 # Firestarter Akadémia Weboldal 🔥
 
 ## Projekt Áttekintés
-A Firestarter Akadémia egy modern, reszponzív weboldal, amely PHP backendre és MySQL adatbázisra épül. A rendszer célja, hogy online platformot biztosítson az akadémia szolgáltatásainak (pl. coaching, tréningek, workshopok) bemutatására, interaktív időpontfoglalásra, valamint a felhasználók és a foglalások hatékony adminisztrációjára.
+A Firestarter Akadémia egy modern, reszponzív weboldal, amely PHP backendre és MySQL adatbázisra épül. A rendszer célja, hogy online platformot biztosítson az szolgáltatásainak (pl. coaching, tréningek, workshopok) bemutatására, interaktív időpontfoglalásra, valamint a felhasználók és a foglalások hatékony adminisztrációjára.
 
 ## Tartalomjegyzék
 - [Főbb Funkciók](#főbb-funkciók)
